@@ -38,8 +38,8 @@ public class DataBase extends SQLiteOpenHelper {
     private static final String[] PLACE_COLUMNS = {KEY_PLACE_ID, KEY_PLACE_NAME, KEY_PLACE_LATITUDE,
             KEY_PLACE_LONGITUDE, KEY_PLACE_ADDRESS, KEY_PLACE_CATEGORY_ID, KEY_PLACE_DESCRIPTION};
 
-    public DataBase(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+    public DataBase(Context context) {
+        super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     public void addCategory(Category category) {
@@ -156,7 +156,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all categories ");
+        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all categories "+categories.toString());
 
         return categories;
     }
@@ -184,7 +184,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all places ");
+        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all places "+places.toString());
         return places;
     }
 
@@ -268,8 +268,8 @@ public class DataBase extends SQLiteOpenHelper {
                 KEY_PLACE_LONGITUDE+" FLOAT," +
                 KEY_PLACE_ADDRESS+" TINYTEXT," +
                 KEY_PLACE_CATEGORY_ID+" INTEGER," +
-                KEY_PLACE_DESCRIPTION+" TEXT" +
-                "FOREIGN KEY ("+KEY_PLACE_CATEGORY_ID+") REFERENCES "+TABLE_CATEGORIES+"("+KEY_CATEGORY_ID+")";
+                KEY_PLACE_DESCRIPTION+" TEXT," +
+                "FOREIGN KEY ("+KEY_PLACE_CATEGORY_ID+") REFERENCES "+TABLE_CATEGORIES+"("+KEY_CATEGORY_ID+"))";
 
         db.execSQL(createCategoryTable);
         db.execSQL(createPlaceTable);

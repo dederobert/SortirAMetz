@@ -1,5 +1,7 @@
 package a1819.m2ihm.sortirametz;
 
+import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.models.Category;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +16,10 @@ public class ActivityClientMap extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_client_map);
+
+        DataBase dataBase = new DataBase(this);
+
+        dataBase.getAllCategories();
     }
 
     @Override

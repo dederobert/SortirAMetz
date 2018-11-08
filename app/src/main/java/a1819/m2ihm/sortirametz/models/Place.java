@@ -21,6 +21,10 @@ public class Place {
         this.description = description;
     }
 
+    public Place(String name, float latitude, float longitude, String address, Category category, String description) {
+        this(0,name, latitude, longitude, address, category, description);
+    }
+
     public Place() {}
 
     public String getName() {
@@ -81,5 +85,11 @@ public class Place {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "place [id: "+id+",name: "+name+",latitude: "+latitude+",longitude: "+
+                longitude+",address: "+address+", "+category.toString()+",description: "+description+"]";
     }
 }

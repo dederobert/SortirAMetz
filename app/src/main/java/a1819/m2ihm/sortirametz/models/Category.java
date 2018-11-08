@@ -9,6 +9,10 @@ public class Category {
         this.description = description;
     }
 
+    public Category(String description) {
+        this(0, description);
+    }
+
     public Category() {}
 
     public int getId() {
@@ -25,5 +29,10 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Category [id: "+id+",description: "+description+"]";
     }
 }
