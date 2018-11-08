@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_consult">Lieux</string>
+    <string name="menu_map">Cartes</string>
+    <string name="settings">Paramètres</string>
+    <string name="help">Aide</string>
+</resources>
