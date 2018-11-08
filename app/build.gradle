@@ -26,7 +26,12 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:25.+'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.google.android.gms:play-services-maps:11.0.4'
+    //noinspection GradleCompatible
+    compile 'com.android.support:support-v4:25.+'
+    //noinspection GradleCompatible
+    compile 'com.android.support:recyclerview-v7:25.1.1'
     testCompile 'junit:junit:4.12'
 }

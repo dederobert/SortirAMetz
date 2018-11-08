@@ -89,7 +89,7 @@ public class Place {
 
     @Override
     public String toString() {
-        return "place [id: "+id+",name: "+name+",latitude: "+latitude+",longitude: "+
+        return "placeFragment [id: "+id+",name: "+name+",latitude: "+latitude+",longitude: "+
                 longitude+",address: "+address+", "+category.toString()+",description: "+description+"]";
     }
 }

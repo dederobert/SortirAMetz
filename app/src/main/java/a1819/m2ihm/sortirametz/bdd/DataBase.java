@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.bdd;
 
-import a1819.m2ihm.sortirametz.ActivityClientMap;
+import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import android.content.ContentValues;
@@ -43,7 +43,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     public void addCategory(Category category) {
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Add category :"+category.toString());
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Add category :"+category.toString());
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -54,7 +54,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     public void addPlace(Place place) {
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Add place :"+place.toString());
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Add placeFragment :"+place.toString());
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -91,9 +91,9 @@ public class DataBase extends SQLiteOpenHelper {
             category.setDescription(cursor.getString(1));
             cursor.close();
 
-            Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get category with id "+id+":"+category.toString());
+            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get category with id "+id+":"+category.toString());
         }else{
-            Log.w(ActivityClientMap.APP_TAG, "[SQLite]Impossible to get category with id "+id);
+            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get category with id "+id);
         }
 
         db.close();
@@ -128,9 +128,9 @@ public class DataBase extends SQLiteOpenHelper {
 
             cursor.close();
 
-            Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get place with id "+id+":"+place.toString());
+            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get placeFragment with id "+id+":"+place.toString());
         }else{
-            Log.w(ActivityClientMap.APP_TAG, "[SQLite]Impossible to get place with id "+id);
+            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get placeFragment with id "+id);
         }
 
         db.close();
@@ -156,7 +156,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all categories "+categories.toString());
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all categories "+categories.toString());
 
         return categories;
     }
@@ -179,12 +179,13 @@ public class DataBase extends SQLiteOpenHelper {
                 place.setAddress(cursor.getString(4));
                 place.setCategory(getCategory(Integer.parseInt(cursor.getString(5))));
                 place.setDescription(cursor.getString(6));
+                places.add(place);
             }while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Get all places "+places.toString());
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all places "+places.toString());
         return places;
     }
 
@@ -203,7 +204,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Update category :"+category);
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update category :"+category);
         return i;
     }
 
@@ -228,7 +229,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Update place :"+place);
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update placeFragment :"+place);
         return i;
     }
 
@@ -241,7 +242,7 @@ public class DataBase extends SQLiteOpenHelper {
         );
         db.close();
 
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Delete category :"+category);
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Delete category :"+category);
     }
 
     public void deletePlace(Place place) {
@@ -253,7 +254,7 @@ public class DataBase extends SQLiteOpenHelper {
         );
         db.close();
 
-        Log.d(ActivityClientMap.APP_TAG, "[SQLite]Delete place :"+place);
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Delete placeFragment :"+place);
     }
 
     @Override
