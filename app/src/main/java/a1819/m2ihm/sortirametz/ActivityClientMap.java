@@ -8,6 +8,8 @@ import android.view.MenuItem;
 
 public class ActivityClientMap extends AppCompatActivity {
 
+    public static final String APP_TAG = "VisiteAMetz";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -9,6 +9,8 @@ public class Place {
     private Category category;
     private String description;
 
+
+
     public Place(int id, String name, float latitude, float longitude, String address, Category category, String description) {
         this.id = id;
         this.name = name;
@@ -18,6 +20,8 @@ public class Place {
         this.category = category;
         this.description = description;
     }
+
+    public Place() {}
 
     public String getName() {
         return name;
