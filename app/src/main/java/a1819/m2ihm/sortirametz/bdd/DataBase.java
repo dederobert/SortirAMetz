@@ -15,7 +15,7 @@ import java.util.List;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "VisiteAMetzDB";
 
 
@@ -34,9 +34,11 @@ public class DataBase extends SQLiteOpenHelper {
     private static final String KEY_PLACE_ADDRESS = "address";
     private static final String KEY_PLACE_CATEGORY_ID = "category_id";
     private static final String KEY_PLACE_DESCRIPTION = "description";
+    private static final String KEY_PLACE_ICON = "icon";
+
 
     private static final String[] PLACE_COLUMNS = {KEY_PLACE_ID, KEY_PLACE_NAME, KEY_PLACE_LATITUDE,
-            KEY_PLACE_LONGITUDE, KEY_PLACE_ADDRESS, KEY_PLACE_CATEGORY_ID, KEY_PLACE_DESCRIPTION};
+            KEY_PLACE_LONGITUDE, KEY_PLACE_ADDRESS, KEY_PLACE_CATEGORY_ID, KEY_PLACE_DESCRIPTION, KEY_PLACE_ICON};
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -64,6 +66,7 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(KEY_PLACE_ADDRESS, place.getAddress());
         values.put(KEY_PLACE_CATEGORY_ID, place.getCategory().getId());
         values.put(KEY_PLACE_DESCRIPTION, place.getDescription());
+        values.put(KEY_PLACE_ICON, place.getIcon());
 
         db.insert(TABLE_PLACES, null, values);
         db.close();
@@ -82,22 +85,27 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
                 );
-        Category category = new Category();
-
-        if (cursor != null){
-            cursor.moveToFirst();
-
-            category.setId(Integer.parseInt(cursor.getString(0)));
-            category.setDescription(cursor.getString(1));
-            cursor.close();
-
-            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get category with id "+id+":"+category.toString());
-        }else{
-            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get category with id "+id);
-        }
 
         db.close();
-        return category;
+        return cursorToCategory(cursor);
+    }
+
+    public Category getCategory(String description) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_CATEGORIES,
+                CATEGORY_COLUMNS,
+                KEY_CATEGORY_DESCRIPTION+" = ?",
+                new String[] {description},
+                null,
+                null,
+                null,
+                null
+        );
+
+        db.close();
+        return cursorToCategory(cursor);
     }
 
     public Place getPlace(int id) {
@@ -179,6 +187,7 @@ public class DataBase extends SQLiteOpenHelper {
                 place.setAddress(cursor.getString(4));
                 place.setCategory(getCategory(Integer.parseInt(cursor.getString(5))));
                 place.setDescription(cursor.getString(6));
+                place.setIcon(cursor.getString(7));
                 places.add(place);
             }while (cursor.moveToNext());
         }
@@ -218,6 +227,7 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(KEY_PLACE_ADDRESS, place.getAddress());
         values.put(KEY_PLACE_CATEGORY_ID, place.getCategory().getId());
         values.put(KEY_PLACE_DESCRIPTION, place.getDescription());
+        values.put(KEY_PLACE_ICON, place.getIcon());
 
 
         int i = db.update(
@@ -257,6 +267,20 @@ public class DataBase extends SQLiteOpenHelper {
         Log.d(ConsultActivity.APP_TAG, "[SQLite]Delete placeFragment :"+place);
     }
 
+    private void insertDefaultValues(SQLiteDatabase db) {
+        addCategory(new Category("bar"));
+        addCategory(new Category("restaurant"));
+        addCategory(new Category("fast-food"));
+
+        addPlace(new Place("Troubadour", 49.1205222f,6.1676358f,
+                      "32 rue du Pont des Morts", getCategory("bar"), "Le troub <3",
+                "http://metz.curieux.net/agenda/images/lieux/_31-logo.png"));
+        addPlace(new Place("Boogie Burger", 49.1198784f,6.1680732f,
+                "1 rue du Pont des Morts", getCategory("restaurant"),
+                "Hamburger viande & pain maison",
+                "https://media-cdn.tripadvisor.com/media/photo-s/08/84/8d/e2/burger-boogie.jpg"));
+    }
+
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createCategoryTable = "CREATE TABLE "+TABLE_CATEGORIES+" (" +
@@ -270,10 +294,12 @@ public class DataBase extends SQLiteOpenHelper {
                 KEY_PLACE_ADDRESS+" TINYTEXT," +
                 KEY_PLACE_CATEGORY_ID+" INTEGER," +
                 KEY_PLACE_DESCRIPTION+" TEXT," +
+                KEY_PLACE_ICON+" TEXT," +
                 "FOREIGN KEY ("+KEY_PLACE_CATEGORY_ID+") REFERENCES "+TABLE_CATEGORIES+"("+KEY_CATEGORY_ID+"))";
 
         db.execSQL(createCategoryTable);
         db.execSQL(createPlaceTable);
+        insertDefaultValues(db);
     }
 
     @Override
@@ -282,5 +308,22 @@ public class DataBase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_CATEGORIES);
 
         this.onCreate(db);
+    }
+
+    private Category cursorToCategory(Cursor cursor) {
+        Category category = new Category();
+
+        if (cursor != null){
+            cursor.moveToFirst();
+
+            category.setId(Integer.parseInt(cursor.getString(0)));
+            category.setDescription(cursor.getString(1));
+            cursor.close();
+
+            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get category :"+category.toString());
+        }else{
+            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get category ");
+        }
+        return category;
     }
 }

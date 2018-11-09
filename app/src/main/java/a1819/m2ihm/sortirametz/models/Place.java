@@ -8,10 +8,11 @@ public class Place {
     private String address;
     private Category category;
     private String description;
+    private String icon;
 
 
-
-    public Place(int id, String name, float latitude, float longitude, String address, Category category, String description) {
+    public Place(int id, String name, float latitude, float longitude, String address,
+                 Category category, String description, String icon) {
         this.id = id;
         this.name = name;
         this.latitude = latitude;
@@ -19,10 +20,12 @@ public class Place {
         this.address = address;
         this.category = category;
         this.description = description;
+        this.icon = icon;
     }
 
-    public Place(String name, float latitude, float longitude, String address, Category category, String description) {
-        this(0,name, latitude, longitude, address, category, description);
+    public Place(String name, float latitude, float longitude, String address,
+                 Category category, String description, String icon) {
+        this(0,name, latitude, longitude, address, category, description, icon);
     }
 
     public Place() {}
@@ -91,5 +94,13 @@ public class Place {
     public String toString() {
         return "placeFragment [id: "+id+",name: "+name+",latitude: "+latitude+",longitude: "+
                 longitude+",address: "+address+", "+category.toString()+",description: "+description+"]";
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
