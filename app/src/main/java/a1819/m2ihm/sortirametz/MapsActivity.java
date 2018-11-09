@@ -23,8 +23,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private DataBase dataBase;
 
-    private static final LatLng METZ_LATITUDE_LONGIUDE = new LatLng(49.1244136,6.1790665);
-    private static final float DEFAULT_ZOOM = 13;
+    private static final LatLng METZ_LATITUDE_LONGITUDE = new LatLng(49.1244136,6.1790665);
+    private static final float DEFAULT_ZOOM = 15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(coordPlace).title(place.getName()));
         }
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition (
-                CameraPosition.builder().target(METZ_LATITUDE_LONGIUDE).zoom(DEFAULT_ZOOM).build()
+                CameraPosition.builder().target(METZ_LATITUDE_LONGITUDE).zoom(DEFAULT_ZOOM).build()
         ));
 
 

@@ -44,21 +44,23 @@ public class DataBase extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void addCategory(Category category) {
+    private void addCategory(SQLiteDatabase db, Category category) {
         Log.d(ConsultActivity.APP_TAG, "[SQLite]Add category :"+category.toString());
-        SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_CATEGORY_DESCRIPTION, category.getDescription());
 
         db.insert(TABLE_CATEGORIES, null, values);
+    }
+
+    public void addCategory(Category category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addCategory(db, category);
         db.close();
     }
 
-    public void addPlace(Place place) {
+    private void addPlace(SQLiteDatabase db, Place place) {
         Log.d(ConsultActivity.APP_TAG, "[SQLite]Add placeFragment :"+place.toString());
-        SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_PLACE_NAME, place.getName());
         values.put(KEY_PLACE_LATITUDE, place.getLatitude());
@@ -69,6 +71,11 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(KEY_PLACE_ICON, place.getIcon());
 
         db.insert(TABLE_PLACES, null, values);
+    }
+
+    public void addPlace(Place place) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addPlace(db, place);
         db.close();
     }
 
@@ -85,14 +92,12 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
                 );
-
+        Category category = cursorToCategory(cursor);
         db.close();
-        return cursorToCategory(cursor);
+        return category;
     }
 
-    public Category getCategory(String description) {
-        SQLiteDatabase db = this.getReadableDatabase();
-
+    private Category getCategory(SQLiteDatabase db, String description) {
         Cursor cursor = db.query(
                 TABLE_CATEGORIES,
                 CATEGORY_COLUMNS,
@@ -103,9 +108,14 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
         );
-
-        db.close();
         return cursorToCategory(cursor);
+    }
+
+    public Category getCategory(String description) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Category category = getCategory(db, description);
+        db.close();
+        return category;
     }
 
     public Place getPlace(int id) {
@@ -268,15 +278,15 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     private void insertDefaultValues(SQLiteDatabase db) {
-        addCategory(new Category("bar"));
-        addCategory(new Category("restaurant"));
-        addCategory(new Category("fast-food"));
+        addCategory(db ,new Category("bar"));
+        addCategory(db, new Category("restaurant"));
+        addCategory(db, new Category("fast-food"));
 
-        addPlace(new Place("Troubadour", 49.1205222f,6.1676358f,
-                      "32 rue du Pont des Morts", getCategory("bar"), "Le troub <3",
+        addPlace(db, new Place("Troubadour", 49.1205222f,6.1676358f,
+                      "32 rue du Pont des Morts", getCategory(db,"bar"), "Le troub <3",
                 "http://metz.curieux.net/agenda/images/lieux/_31-logo.png"));
-        addPlace(new Place("Boogie Burger", 49.1198784f,6.1680732f,
-                "1 rue du Pont des Morts", getCategory("restaurant"),
+        addPlace(db, new Place("Boogie Burger", 49.1198784f,6.1680732f,
+                "1 rue du Pont des Morts", getCategory(db,"restaurant"),
                 "Hamburger viande & pain maison",
                 "https://media-cdn.tripadvisor.com/media/photo-s/08/84/8d/e2/burger-boogie.jpg"));
     }
@@ -306,7 +316,6 @@ public class DataBase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_PLACES);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_CATEGORIES);
-
         this.onCreate(db);
     }
 

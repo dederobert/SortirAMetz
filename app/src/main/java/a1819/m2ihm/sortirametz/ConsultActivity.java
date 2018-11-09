@@ -2,9 +2,11 @@ package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
+import a1819.m2ihm.sortirametz.view.PlaceListAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
 
@@ -26,6 +28,8 @@ public class ConsultActivity extends AppCompatActivity {
         layout.setOnRefreshListener(new RefreshListener(this));
 
         list = (RecyclerView) findViewById(R.id.list);
+        list.setLayoutManager(new LinearLayoutManager(this));
+        list.setAdapter(new PlaceListAdapter(dataBase.getAllPlaces()));
 
     }
 }
