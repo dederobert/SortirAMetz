@@ -1,8 +1,10 @@
 package a1819.m2ihm.sortirametz.view;
 
+import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
