@@ -1,9 +1,10 @@
 package a1819.m2ihm.sortirametz.listeners;
 
 import a1819.m2ihm.sortirametz.ConsultActivity;
+import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
-import a1819.m2ihm.sortirametz.view.PlaceListAdapter;
-import a1819.m2ihm.sortirametz.view.PlaceListHolder;
+import a1819.m2ihm.sortirametz.adapter.PlaceListAdapter;
+import a1819.m2ihm.sortirametz.adapter.PlaceListHolder;
 import android.graphics.Color;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -28,8 +29,8 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
 
             adapter.removeItem(deleteIndex);
             Snackbar snackbar = Snackbar.
-                    make(activity.linearLayout, name + " removed fram list !", Snackbar.LENGTH_LONG);
-            snackbar.setAction("UNDO", new View.OnClickListener() {
+                    make(activity.mainLayout, name + " " + R.string.element_removed, Snackbar.LENGTH_LONG);
+            snackbar.setAction(R.string.undo, new View.OnClickListener() {
 
                 @Override
                 public void onClick(View v) {

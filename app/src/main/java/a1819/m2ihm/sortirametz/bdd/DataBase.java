@@ -179,6 +179,23 @@ public class DataBase extends SQLiteOpenHelper {
         return categories;
     }
 
+    /*public List<String> getAllCategoriesName() {
+        List<String> names = new LinkedList<>();
+        String query = "SELECT "+KEY_CATEGORY_DESCRIPTION+" FROM "+TABLE_CATEGORIES;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        String name = null;
+        if (cursor.moveToFirst()) {
+            do {
+                name = cursor.getString(0);
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all categories name "+names.toString());
+        return names;
+    }*/
+
     public List<Place> getAllPlaces() {
         List<Place> places = new LinkedList<>();
 

@@ -4,6 +4,14 @@
     <string name="menu_map">Cartes</string>
     <string name="settings">Paramètres</string>
     <string name="help">Aide</string>
-    <string name="app_name" translatable="false">Sortir A Metz</string>
-    <string name="delete">delete</string>
+    <string name="delete">Supprimer</string>
+    <string name="element_removed">supprimer de la liste !</string>
+    <string name="undo">ANNULER</string>
+    <string name="name">Nom</string>
+    <string name="address">Adresse</string>
+    <string name="category">Categorie</string>
+    <string name="description">Description</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="icon">Icon</string>
 </resources>

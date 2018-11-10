@@ -33,6 +33,6 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category [id: "+id+",description: "+description+"]";
+        return description;
     }
 }

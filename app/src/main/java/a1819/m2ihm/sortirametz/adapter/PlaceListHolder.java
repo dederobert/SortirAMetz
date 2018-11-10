@@ -1,4 +1,4 @@
-package a1819.m2ihm.sortirametz.view;
+package a1819.m2ihm.sortirametz.adapter;
 
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;

@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.listeners;
 
-import a1819.m2ihm.sortirametz.view.PlaceListHolder;
+import a1819.m2ihm.sortirametz.adapter.PlaceListHolder;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -10,7 +10,7 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     private RecyclerItemTouchHelperListener listener;
 
     public ItemTouchHelperCallback(RecyclerItemTouchHelperListener listener) {
-        super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+        super(0, ItemTouchHelper.LEFT);
         this.listener = listener;
     }
 
