@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:map="http://schemas.android.com/apk/res-auto"
@@ -8,9 +8,57 @@
         android:layout_height="match_parent"
         tools:context="a1819.m2ihm.sortirametz.MapsActivity"
 >
-    <FrameLayout
+
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lyt_map_filter"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:layout_centerHorizontal="true"
+            >
+
+        <TextView
+                android:id="@+id/lbl_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                />
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:id="@+id/edt_filter_radius"
+                android:hint="@string/radius"
+                android:inputType="textPersonName"
+                android:layout_toEndOf="@id/lbl_filter"
+                android:layout_centerVertical="true"
+                />
+
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/spi_filter_category"
+                android:layout_toEndOf="@id/edt_filter_radius"
+                android:layout_centerVertical="true"
+                />
+
+        <Button
+                android:text="@string/filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btn_filter"
+                android:layout_toEndOf="@id/spi_filter_category"
+                />
+    </RelativeLayout>
+
+    <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:id="@+id/lyt_map"
+            android:layout_below="@id/lyt_map_filter"
+            >
 
         <fragment
                 android:layout_width="match_parent"
@@ -19,5 +67,7 @@
                 android:name="com.google.android.gms.maps.MapFragment"
                 map:uiCompass="true"
                 />
-    </FrameLayout>
-</LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>

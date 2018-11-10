@@ -2,6 +2,7 @@ package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.listeners.LocationButtonListener;
+import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import android.Manifest;
 import android.content.Intent;
@@ -14,7 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.*;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,7 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemSelectedListener {
 
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
@@ -32,20 +34,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final LatLng METZ_LATITUDE_LONGITUDE = new LatLng(49.1244136,6.1790665);
     private static final float DEFAULT_ZOOM = 15;
 
+    private EditText edt_filter_radius;
+    private Spinner spi_filter_category;
+    private Object selectedCategory;
+    private Button btn_filter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        dataBase = new DataBase(this);
+
+        edt_filter_radius = findViewById(R.id.edt_filter_radius);
+        spi_filter_category = findViewById(R.id.spi_filter_category);
+        btn_filter = findViewById(R.id.btn_filter);
+        btn_filter.setOnClickListener(new FilterButtonListener(this));
+
+        //Set spinner content
+        List<Category> categories = dataBase.getAllCategories();
+        spi_filter_category.setOnItemSelectedListener(this);
+        ArrayAdapter<Category> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spi_filter_category.setAdapter(adapter);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-        dataBase = new DataBase(this);
-        //dataBase.addPlace(new Place("Troubadour", 49.1205222f,6.1676358f,
-          //      "32 rue du Pont des Morts", dataBase.getCategory(1), "Le troub <3"));
-        dataBase.getAllPlaces();
     }
 
 
@@ -128,5 +145,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void goToConsult() {
         this.startActivity(new Intent(this, ConsultActivity.class));
         this.finish();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        this.selectedCategory = (Category)parent.getItemAtPosition(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        this.selectedCategory = null;
     }
 }
