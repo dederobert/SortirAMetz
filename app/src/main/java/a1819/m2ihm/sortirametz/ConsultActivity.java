@@ -5,8 +5,7 @@ import a1819.m2ihm.sortirametz.listeners.AddButtonListner;
 import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
 import a1819.m2ihm.sortirametz.listeners.SwipeListener;
-import a1819.m2ihm.sortirametz.adapter.PlaceListAdapter;
-import a1819.m2ihm.sortirametz.models.Place;
+import a1819.m2ihm.sortirametz.adapter.ListAdapter;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,7 +25,7 @@ import android.widget.ImageButton;
 public class ConsultActivity extends AppCompatActivity {
 
     public static final String APP_TAG = "VisiteAMetz";
-    public static PlaceListAdapter adapter;
+    public static ListAdapter adapter;
     private DataBase dataBase;
 
     public FrameLayout mainLayout;
@@ -51,7 +49,8 @@ public class ConsultActivity extends AppCompatActivity {
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setItemAnimator(new DefaultItemAnimator());
         list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        adapter = new PlaceListAdapter(this, dataBase.getAllPlaces());
+
+        adapter = new ListAdapter(this, dataBase.getAllPlacesGroupByCategory());
         list.setAdapter(adapter);
 
         //Set the callback for swipe on left and right
@@ -75,7 +74,7 @@ public class ConsultActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode==PlaceActivity.RESULT_EDIT)
+        if (requestCode==PlaceActivity.RESULT_EDIT || resultCode ==RESULT_CANCELED)
             list.getAdapter().notifyDataSetChanged();
     }
 

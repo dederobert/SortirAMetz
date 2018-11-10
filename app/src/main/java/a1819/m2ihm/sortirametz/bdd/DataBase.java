@@ -3,6 +3,7 @@ package a1819.m2ihm.sortirametz.bdd;
 import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
+import a1819.m2ihm.sortirametz.models.Recyclerable;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,6 +13,7 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeMap;
 
 public class DataBase extends SQLiteOpenHelper {
 
@@ -70,7 +72,8 @@ public class DataBase extends SQLiteOpenHelper {
         values.put(KEY_PLACE_DESCRIPTION, place.getDescription());
         values.put(KEY_PLACE_ICON, place.getIcon());
 
-        db.insert(TABLE_PLACES, null, values);
+        long id = db.insert(TABLE_PLACES, null, values);
+        place.setId(id);
     }
 
     public void addPlace(Place place) {
@@ -118,7 +121,7 @@ public class DataBase extends SQLiteOpenHelper {
         return category;
     }
 
-    public Place getPlace(int id) {
+    public Place getPlace(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -156,10 +159,14 @@ public class DataBase extends SQLiteOpenHelper {
         return place;
     }
 
+    public List<Place> getAllPlaces() {
+        return getAllPlaces(null,false);
+    }
+
     public List<Category> getAllCategories() {
         List<Category> categories = new LinkedList<>();
 
-        String query = "SELECT * FROM "+TABLE_CATEGORIES;
+        String query = "SELECT * FROM "+TABLE_CATEGORIES ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
@@ -197,10 +204,29 @@ public class DataBase extends SQLiteOpenHelper {
         return names;
     }*/
 
-    public List<Place> getAllPlaces() {
-        List<Place> places = new LinkedList<>();
+    public List<Recyclerable> getAllPlacesGroupByCategory() {
+        List<Recyclerable> recyclerables = new LinkedList<>();
+        for (Category category:getAllCategories()) {
+            recyclerables.add(category);
+            recyclerables.addAll(getAllPlaces(category));
+        }
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]"+recyclerables.toString());
+        return recyclerables;
+    }
 
-        String query = "SELECT * FROM "+TABLE_PLACES;
+    public List<Place> getAllPlaces(Category category) {
+        return getAllPlaces(category, false);
+    }
+
+    public List<Place> getAllPlaces(boolean sortByCategory) {
+        return getAllPlaces(null, sortByCategory);
+    }
+
+    public List<Place> getAllPlaces(Category category, boolean sortByCategory) {
+        List<Place> places = new LinkedList<>();
+        String query = "SELECT * FROM "+TABLE_PLACES
+                + (category!=null?" WHERE "+KEY_PLACE_CATEGORY_ID+" = "+category.getId():"")
+                + (sortByCategory?" ORDER BY "+KEY_PLACE_CATEGORY_ID:"");
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);

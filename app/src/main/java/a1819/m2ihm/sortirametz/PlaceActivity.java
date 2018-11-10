@@ -3,20 +3,24 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class PlaceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher {
+public class PlaceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnFocusChangeListener {
 
 
     public static final int RESULT_ADD = 10;
@@ -25,6 +29,8 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
     private DataBase dataBase;
     private RelativeLayout place_main_layout;
     private EditText edt_name;
+    private EditText edt_coord;
+    //private Button btn_coord;
     private EditText edt_address;
     private EditText edt_description;
     private EditText edt_icon;
@@ -36,21 +42,31 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
     private Category selectedCategory;
     private boolean add;
     private Place place = null;
+    private final int PLACE_PICKER_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
         activity = this;
-        int placeId = getIntent().getIntExtra("placeId", -1);
+        long placeId = getIntent().getLongExtra("placeId", -1);
         this.add = (placeId==-1);
-
 
         dataBase = new DataBase(this);
         if (!add) place = dataBase.getPlace(placeId);
+        else place = new Place();
+
+        if (add)
+            startPicker();
+
+        String title = add?getResources().getString(R.string.add_title)
+                :(getResources().getString(R.string.edit_title) + " "+place.getName());
+        setTitle(title);
 
         place_main_layout = findViewById(R.id.place_main_layout);
         edt_name = findViewById(R.id.edt_name);
+        edt_coord = findViewById(R.id.edt_coord);
+        edt_coord.setOnFocusChangeListener(this);
         edt_address = findViewById(R.id.edt_address);
         Spinner spi_category = findViewById(R.id.spi_category);
         edt_description = findViewById(R.id.edt_description);
@@ -73,6 +89,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
 
         if (!add) {
             edt_name.setText(place.getName());
+            edt_coord.setText(place.getLatitude()+", "+place.getLongitude());
             edt_address.setText(place.getAddress());
             edt_description.setText(place.getDescription());
             edt_icon.setText(place.getIcon());
@@ -82,27 +99,56 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private void startPicker() {
+        PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+        builder.setLatLngBounds(LatLngBounds.builder().include(MapsActivity.METZ_LATITUDE_LONGITUDE).build());
+        try {
+            startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
+            Toast.makeText(this, "Error map picker cannot open", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                com.google.android.gms.location.places.Place place = PlacePicker.getPlace(data, this);
+                edt_coord.setText(place.getLatLng().latitude + ", " +place.getLatLng().longitude);
+                if (add) edt_address.setText(place.getAddress());
+                if (add) edt_name.setText(place.getName());
+                this.place.setLatitude((float) place.getLatLng().latitude);
+                this.place.setLongitude((float) place.getLatLng().longitude);
+                Toast.makeText(this, R.string.place_picked, Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v.equals(btn_save)) {
-            if (add){
-                place = new Place(edt_name.getText().toString(), 0, 0,
-                        edt_address.getText().toString(), selectedCategory,
-                        edt_description.getText().toString(), edt_icon.getText().toString());
+            if (add) {
+                place.setName(edt_name.getText().toString());
+                place.setAddress(edt_address.getText().toString());
+                place.setCategory(selectedCategory);
+                place.setDescription(edt_description.getText().toString());
+                place.setIcon(edt_icon.getText().toString());
                 dataBase.addPlace(place);
                 ConsultActivity.adapter.insertPlace(place);
-                this.setResult(RESULT_ADD);
-            }else {
+                this.setResult(RESULT_OK);
+            } else {
                 place.setName(edt_name.getText().toString());
                 place.setAddress(edt_address.getText().toString());
                 place.setCategory(selectedCategory);
                 place.setDescription(edt_description.getText().toString());
                 place.setIcon(edt_icon.getText().toString());
                 dataBase.updatePlace(place);
-                this.setResult(RESULT_EDIT);
+                this.setResult(RESULT_OK);
             }
             this.finish();
         }else {
+            setResult(RESULT_CANCELED);
             this.finish();
         }
     }
@@ -134,5 +180,12 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
             }
         });
         builder.build().load(Uri.parse(edt_icon.getText().toString())).into(img_icon);
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            startPicker();
+        }
     }
 }

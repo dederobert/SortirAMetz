@@ -31,12 +31,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private DataBase dataBase;
 
-    private static final LatLng METZ_LATITUDE_LONGITUDE = new LatLng(49.1244136,6.1790665);
+    public static final LatLng METZ_LATITUDE_LONGITUDE = new LatLng(49.1244136,6.1790665);
     private static final float DEFAULT_ZOOM = 15;
 
     private EditText edt_filter_radius;
     private Spinner spi_filter_category;
-    private Object selectedCategory;
+    private Category selectedCategory;
     private Button btn_filter;
 
     @Override

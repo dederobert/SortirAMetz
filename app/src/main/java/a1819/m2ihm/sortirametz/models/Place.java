@@ -1,7 +1,7 @@
 package a1819.m2ihm.sortirametz.models;
 
-public class Place {
-    private int id;
+public class Place implements Recyclerable {
+    private long id;
     private String name;
     private float latitude;
     private float longitude;
@@ -82,11 +82,11 @@ public class Place {
         this.description = description;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -102,5 +102,10 @@ public class Place {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @Override
+    public boolean isHeader() {
+        return false;
     }
 }

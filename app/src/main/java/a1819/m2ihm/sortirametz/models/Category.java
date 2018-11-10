@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.models;
 
-public class Category {
+public class Category implements Recyclerable {
     private int id;
     private String description;
 
@@ -43,5 +43,10 @@ public class Category {
     @Override
     public String toString() {
         return description;
+    }
+
+    @Override
+    public boolean isHeader() {
+        return true;
     }
 }

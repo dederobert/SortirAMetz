@@ -4,7 +4,7 @@ import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.PlaceActivity;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
-import a1819.m2ihm.sortirametz.adapter.PlaceListAdapter;
+import a1819.m2ihm.sortirametz.adapter.ListAdapter;
 import a1819.m2ihm.sortirametz.adapter.PlaceListHolder;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,9 +18,9 @@ import android.view.View;
  */
 public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchHelperListener {
     private final ConsultActivity activity;
-    private final PlaceListAdapter adapter;
+    private final ListAdapter adapter;
 
-    public SwipeListener(ConsultActivity consultActivity, PlaceListAdapter adapter) {
+    public SwipeListener(ConsultActivity consultActivity, ListAdapter adapter) {
         this.activity = consultActivity;
         this.adapter = adapter;
     }
@@ -28,19 +28,20 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, final int position) {
         if (viewHolder instanceof PlaceListHolder) {
-            //The name of the swiped item
-            String name = adapter.getPlace(viewHolder.getAdapterPosition()).getName();
-
-            //If swipe to left => delete else Edit
-            if (direction == ItemTouchHelper.LEFT)
-                removeItem(viewHolder, name);
-            else
-                editItem(viewHolder);
+            if (!adapter.getPlace(position).isHeader()){
+                //The name of the swiped item
+                String name = ((Place)adapter.getPlace(position)).getName();
+                //If swipe to left => delete else Edit
+                if (direction == ItemTouchHelper.LEFT)
+                    removeItem(viewHolder, name);
+                else
+                    editItem(viewHolder);
+            }
         }
     }
 
     private void editItem(RecyclerView.ViewHolder viewHolder) {
-        Place place = adapter.getPlace(viewHolder.getAdapterPosition());
+        Place place = ((Place)adapter.getPlace(viewHolder.getAdapterPosition()));
         Intent intent = new Intent(this.activity, PlaceActivity.class);
         intent.putExtra("placeId",place.getId());
         activity.startActivityForResult(intent, PlaceActivity.RESULT_EDIT);
@@ -48,7 +49,7 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
 
     private void removeItem(RecyclerView.ViewHolder viewHolder, String name) {
         //The deleted place and its index
-        final Place deletedPlace = adapter.getPlace(viewHolder.getAdapterPosition());
+        final Place deletedPlace = ((Place)adapter.getPlace(viewHolder.getAdapterPosition()));
         final int deleteIndex = viewHolder.getAdapterPosition();
 
         //Call remove item (it doesn't remove from database)
