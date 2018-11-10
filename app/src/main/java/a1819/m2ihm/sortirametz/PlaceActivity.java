@@ -18,6 +18,10 @@ import java.util.List;
 
 public class PlaceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher {
 
+
+    public static final int RESULT_ADD = 10;
+    public static final int RESULT_EDIT = 11;
+
     private DataBase dataBase;
     private RelativeLayout place_main_layout;
     private EditText edt_name;
@@ -86,6 +90,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                         edt_address.getText().toString(), selectedCategory,
                         edt_description.getText().toString(), edt_icon.getText().toString());
                 dataBase.addPlace(place);
+                this.setResult(RESULT_ADD);
             }else {
                 place.setName(edt_name.getText().toString());
                 place.setAddress(edt_address.getText().toString());
@@ -93,6 +98,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                 place.setDescription(edt_description.getText().toString());
                 place.setIcon(edt_icon.getText().toString());
                 dataBase.updatePlace(place);
+                this.setResult(RESULT_EDIT);
             }
             this.finish();
         }else {

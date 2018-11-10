@@ -43,7 +43,7 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
         Place place = adapter.getPlace(viewHolder.getAdapterPosition());
         Intent intent = new Intent(this.activity, PlaceActivity.class);
         intent.putExtra("placeId",place.getId());
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, PlaceActivity.RESULT_EDIT);
     }
 
     private void removeItem(RecyclerView.ViewHolder viewHolder, String name) {

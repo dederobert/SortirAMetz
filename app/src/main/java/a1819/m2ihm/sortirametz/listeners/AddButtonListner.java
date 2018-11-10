@@ -16,6 +16,6 @@ public class AddButtonListner implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         Intent intent = new Intent(activity, PlaceActivity.class);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent, PlaceActivity.RESULT_ADD);
     }
 }
