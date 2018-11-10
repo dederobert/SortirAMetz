@@ -35,4 +35,9 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListHolder>{
     public int getItemCount() {
         return places.size();
     }
+
+    public void notifyDelete(int position) {
+        places.remove(position);
+        notifyDataSetChanged();
+    }
 }

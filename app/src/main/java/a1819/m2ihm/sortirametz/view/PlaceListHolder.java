@@ -7,20 +7,24 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.squareup.picasso.Picasso;
 
 public class PlaceListHolder extends RecyclerView.ViewHolder{
 
-    private TextView placeNameView;
     private ImageView placeIcon;
+    private TextView placeNameView;
+    private TextView placeAddressView;
 
     public PlaceListHolder(View itemView) {
         super(itemView);
         placeIcon = (ImageView) itemView.findViewById(R.id.placeIcon);
         placeNameView = (TextView) itemView.findViewById(R.id.placeName);
+        placeAddressView = (TextView) itemView.findViewById(R.id.placeAddress);
     }
 
     public void bind(Place place) {
-        placeIcon.setImageURI(Uri.parse(place.getIcon()));
+        Picasso.get().load(Uri.parse(place.getIcon())).into(placeIcon);
         placeNameView.setText(place.getName());
+        placeAddressView.setText(place.getAddress());
     }
 }

@@ -1,6 +1,7 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
 import a1819.m2ihm.sortirametz.view.PlaceListAdapter;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,7 +37,9 @@ public class ConsultActivity extends AppCompatActivity {
 
         list = (RecyclerView) findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        list.setAdapter(new PlaceListAdapter(dataBase.getAllPlaces()));
+        PlaceListAdapter adapter = new PlaceListAdapter(dataBase.getAllPlaces());
+        list.setAdapter(adapter);
+        new ItemTouchHelper(new ItemTouchHelperCallback(adapter)).attachToRecyclerView(list);
 
     }
 
