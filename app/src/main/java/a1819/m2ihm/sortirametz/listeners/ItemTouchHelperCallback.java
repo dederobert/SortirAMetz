@@ -9,8 +9,8 @@ import android.view.View;
 public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     private RecyclerItemTouchHelperListener listener;
 
-    public ItemTouchHelperCallback(RecyclerItemTouchHelperListener listener) {
-        super(0, ItemTouchHelper.LEFT);
+    public ItemTouchHelperCallback(RecyclerItemTouchHelperListener listener, int direction) {
+        super(0, direction);
         this.listener = listener;
     }
 
@@ -46,11 +46,16 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
     }
 
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+        //Call onSwiped from SwipeListener interface
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
     }
 
+    /**
+     * Swipe listener interface
+     */
     public interface RecyclerItemTouchHelperListener {
          void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
     }

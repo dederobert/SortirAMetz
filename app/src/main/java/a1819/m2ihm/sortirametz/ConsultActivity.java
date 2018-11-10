@@ -26,7 +26,6 @@ public class ConsultActivity extends AppCompatActivity {
 
     public static final String APP_TAG = "VisiteAMetz";
     private DataBase dataBase;
-    private ImageButton addButton;
 
     public FrameLayout mainLayout;
     public SwipeRefreshLayout layout;
@@ -38,21 +37,28 @@ public class ConsultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consult);
         dataBase = new DataBase(this);
-
         mainLayout = (FrameLayout) findViewById(R.id.linearLayout);
 
+        //Set the layout for swipe-to-refresh
         layout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         layout.setOnRefreshListener(new RefreshListener(this));
 
+        //Set the adapter which set items and item's holder
         list = (RecyclerView) findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setItemAnimator(new DefaultItemAnimator());
         list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        PlaceListAdapter adapter = new PlaceListAdapter(dataBase.getAllPlaces());
+        PlaceListAdapter adapter = new PlaceListAdapter(this, dataBase.getAllPlaces());
         list.setAdapter(adapter);
-        new ItemTouchHelper(new ItemTouchHelperCallback(new SwipeListener(this, adapter))).attachToRecyclerView(list);
 
-        addButton = (ImageButton) findViewById(R.id.addButton);
+        //Set the callback for swipe on left and right
+        new ItemTouchHelper(new ItemTouchHelperCallback(
+                new SwipeListener(this, adapter), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT))
+                .attachToRecyclerView(list);
+
+
+
+        ImageButton addButton = (ImageButton) findViewById(R.id.addButton);
         addButton.setOnClickListener(new AddButtonListner(this));
     }
 
@@ -87,5 +93,9 @@ public class ConsultActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MapsActivity.class);
         this.startActivity(intent);
         this.finish();
+    }
+
+    public DataBase getDataBase() {
+        return dataBase;
     }
 }
