@@ -4,4 +4,5 @@
     <string name="menu_map">Cartes</string>
     <string name="settings">Paramètres</string>
     <string name="help">Aide</string>
+    <string name="app_name" translatable="false">Sortir A Metz</string>
 </resources>

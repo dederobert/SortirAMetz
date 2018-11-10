@@ -2,8 +2,10 @@ package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.models.Place;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,7 +19,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private DataBase dataBase;
@@ -78,7 +80,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        //gestion des cliques dans le menu
+        switch (item.getItemId()){
+            case R.id.menu_consult:
+                goToConsult();
+                return true;
+            case R.id.menu_map:
+                return true;
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToConsult() {
+        this.startActivity(new Intent(this, ConsultActivity.class));
+        this.finish();
     }
 }
