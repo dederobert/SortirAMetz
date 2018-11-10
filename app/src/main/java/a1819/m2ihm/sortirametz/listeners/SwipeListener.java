@@ -1,6 +1,7 @@
 package a1819.m2ihm.sortirametz.listeners;
 
 import a1819.m2ihm.sortirametz.ConsultActivity;
+import a1819.m2ihm.sortirametz.PlaceActivity;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.adapter.PlaceListAdapter;
@@ -39,7 +40,10 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
     }
 
     private void editItem(RecyclerView.ViewHolder viewHolder) {
-        Intent intent = new Intent(this.activity, null);
+        Place place = adapter.getPlace(viewHolder.getAdapterPosition());
+        Intent intent = new Intent(this.activity, PlaceActivity.class);
+        intent.putExtra("placeId",place.getId());
+        activity.startActivity(intent);
     }
 
     private void removeItem(RecyclerView.ViewHolder viewHolder, String name) {

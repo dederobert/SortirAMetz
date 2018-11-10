@@ -11,7 +11,9 @@
     <string name="address">Adresse</string>
     <string name="category">Categorie</string>
     <string name="description">Description</string>
-    <string name="add">Add</string>
-    <string name="cancel">Cancel</string>
+    <string name="save">Sauvegarder</string>
+    <string name="cancel">Annuler</string>
     <string name="icon">Icon</string>
+    <string name="place_icon">Place icon</string>
+    <string name="error_image_load">Impossible de charger l\'icon</string>
 </resources>

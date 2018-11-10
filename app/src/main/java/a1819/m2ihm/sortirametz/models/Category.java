@@ -32,6 +32,15 @@ public class Category {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Category) {
+            Category category = (Category)obj;
+            return this.id==category.getId();
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return description;
     }

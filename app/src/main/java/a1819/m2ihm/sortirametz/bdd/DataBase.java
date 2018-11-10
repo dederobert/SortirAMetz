@@ -143,6 +143,7 @@ public class DataBase extends SQLiteOpenHelper {
             place.setAddress(cursor.getString(4));
             place.setCategory(getCategory(Integer.parseInt(cursor.getString(5))));
             place.setDescription(cursor.getString(6));
+            place.setIcon(cursor.getString(7));
 
             cursor.close();
 
