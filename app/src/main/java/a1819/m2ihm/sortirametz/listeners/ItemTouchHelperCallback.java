@@ -1,33 +1,17 @@
 package a1819.m2ihm.sortirametz.listeners;
 
-import a1819.m2ihm.sortirametz.view.PlaceListAdapter;
 import a1819.m2ihm.sortirametz.view.PlaceListHolder;
+import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
-    private final PlaceListAdapter adapter;
+    private RecyclerItemTouchHelperListener listener;
 
-    /**
-     * Creates a Callback for the given drag and swipe allowance. These values serve as
-     * defaults
-     * and if you want to customize behavior per ViewHolder, you can override
-     * {@link #getSwipeDirs(RecyclerView, ViewHolder)}
-     * and / or {@link #getDragDirs(RecyclerView, ViewHolder)}.
-     *
-     * @param dragDirs  Binary OR of direction flags in which the Views can be dragged. Must be
-     *                  composed of {@link #LEFT}, {@link #RIGHT}, {@link #START}, {@link
-     *                  #END},
-     *                  {@link #UP} and {@link #DOWN}.
-     * @param swipeDirs Binary OR of direction flags in which the Views can be swiped. Must be
-     *                  composed of {@link #LEFT}, {@link #RIGHT}, {@link #START}, {@link
-     *                  #END},
-     *                  {@link #UP} and {@link #DOWN}.
-     */
-    public ItemTouchHelperCallback(PlaceListAdapter adapter) {
+    public ItemTouchHelperCallback(RecyclerItemTouchHelperListener listener) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
-        this.adapter = adapter;
+        this.listener = listener;
     }
 
 
@@ -37,7 +21,37 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     }
 
     @Override
+    public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+        if (viewHolder != null) {
+            final View foregroundView =  ((PlaceListHolder)viewHolder).viewForeground;
+            getDefaultUIUtil().onSelected(foregroundView);
+        }
+    }
+
+    @Override
+    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        final View foregroundView = ((PlaceListHolder)viewHolder).viewForeground;
+        getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX,dY, actionState, isCurrentlyActive);
+    }
+
+    @Override
+    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+        final View foregroundView = ((PlaceListHolder)viewHolder).viewForeground;
+        getDefaultUIUtil().clearView(foregroundView);
+    }
+
+    @Override
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        final View foregroundView = ((PlaceListHolder)viewHolder).viewForeground;
+        getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
+    }
+
+    @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        adapter.notifyDelete(viewHolder.getLayoutPosition());
+        listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+    }
+
+    public interface RecyclerItemTouchHelperListener {
+         void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
     }
 }

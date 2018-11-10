@@ -3,19 +3,21 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
+import a1819.m2ihm.sortirametz.listeners.SwipeListener;
 import a1819.m2ihm.sortirametz.view.PlaceListAdapter;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import java.util.Map;
+import android.widget.LinearLayout;
 
 
 public class ConsultActivity extends AppCompatActivity {
@@ -23,6 +25,7 @@ public class ConsultActivity extends AppCompatActivity {
     public static final String APP_TAG = "VisiteAMetz";
     private DataBase dataBase;
 
+    public LinearLayout linearLayout;
     public SwipeRefreshLayout layout;
     public RecyclerView list;
 
@@ -32,14 +35,18 @@ public class ConsultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_consult);
         dataBase = new DataBase(this);
 
+        linearLayout = (LinearLayout) findViewById(R.id.linearLayout);
+
         layout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         layout.setOnRefreshListener(new RefreshListener(this));
 
         list = (RecyclerView) findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
+        list.setItemAnimator(new DefaultItemAnimator());
+        list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         PlaceListAdapter adapter = new PlaceListAdapter(dataBase.getAllPlaces());
         list.setAdapter(adapter);
-        new ItemTouchHelper(new ItemTouchHelperCallback(adapter)).attachToRecyclerView(list);
+        new ItemTouchHelper(new ItemTouchHelperCallback(new SwipeListener(this, adapter))).attachToRecyclerView(list);
 
     }
 

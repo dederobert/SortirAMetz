@@ -5,4 +5,5 @@
     <string name="settings">Paramètres</string>
     <string name="help">Aide</string>
     <string name="app_name" translatable="false">Sortir A Metz</string>
+    <string name="delete">delete</string>
 </resources>
