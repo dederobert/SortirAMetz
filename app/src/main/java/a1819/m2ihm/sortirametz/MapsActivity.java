@@ -2,9 +2,8 @@ package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.models.Place;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
