@@ -69,7 +69,8 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
         snackbar.addCallback(new Snackbar.Callback(){
             @Override
             public void onDismissed(Snackbar transientBottomBar, int event) {
-                adapter.removeItemFromDatabase(deletedPlace);
+                if (event != Snackbar.Callback.DISMISS_EVENT_ACTION)
+                    adapter.removeItemFromDatabase(deletedPlace);
             }
         });
         snackbar.setActionTextColor(Color.YELLOW);

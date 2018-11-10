@@ -65,4 +65,9 @@ public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListHolder>{
         this.places = places;
         notifyDataSetChanged();
     }
+
+    public void insertPlace(Place place) {
+        places.add(place);
+        notifyItemInserted(places.size()-1);
+    }
 }

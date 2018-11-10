@@ -90,6 +90,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                         edt_address.getText().toString(), selectedCategory,
                         edt_description.getText().toString(), edt_icon.getText().toString());
                 dataBase.addPlace(place);
+                ConsultActivity.adapter.insertPlace(place);
                 this.setResult(RESULT_ADD);
             }else {
                 place.setName(edt_name.getText().toString());

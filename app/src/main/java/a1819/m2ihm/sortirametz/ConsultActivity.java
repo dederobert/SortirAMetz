@@ -6,6 +6,7 @@ import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
 import a1819.m2ihm.sortirametz.listeners.SwipeListener;
 import a1819.m2ihm.sortirametz.adapter.PlaceListAdapter;
+import a1819.m2ihm.sortirametz.models.Place;
 import android.content.Intent;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +27,7 @@ import android.widget.ImageButton;
 public class ConsultActivity extends AppCompatActivity {
 
     public static final String APP_TAG = "VisiteAMetz";
+    public static PlaceListAdapter adapter;
     private DataBase dataBase;
 
     public FrameLayout mainLayout;
@@ -49,7 +51,7 @@ public class ConsultActivity extends AppCompatActivity {
         list.setLayoutManager(new LinearLayoutManager(this));
         list.setItemAnimator(new DefaultItemAnimator());
         list.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        PlaceListAdapter adapter = new PlaceListAdapter(this, dataBase.getAllPlaces());
+        adapter = new PlaceListAdapter(this, dataBase.getAllPlaces());
         list.setAdapter(adapter);
 
         //Set the callback for swipe on left and right
@@ -73,9 +75,8 @@ public class ConsultActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        Log.d(APP_TAG, "RESUME WITH RESULT");
-        list.getAdapter().notifyDataSetChanged();
+        if (resultCode==PlaceActivity.RESULT_EDIT)
+            list.getAdapter().notifyDataSetChanged();
     }
 
     @Override
