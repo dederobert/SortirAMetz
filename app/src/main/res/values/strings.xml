@@ -17,4 +17,5 @@
     <string name="place_icon">Place icon</string>
     <string name="error_image_load">Impossible to load place icon</string>
     <string name="edit">Edit</string>
+    <string name="needed_loaction">Application need loaction to work</string>
 </resources>
