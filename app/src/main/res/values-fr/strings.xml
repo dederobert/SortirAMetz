@@ -116,6 +116,8 @@
     <string name="error_username">Enter a valid username or email</string>
     <string name="error_password">more 6 characters</string>
     <string name="error_email">enter a valid email</string>
+    <string name="error_register">Signup failed</string>
+    <string name="error_login">Login Failed</string>
     <string-array name="pref_unit_list_distance">
         <item>m</item>
         <item>ft</item>

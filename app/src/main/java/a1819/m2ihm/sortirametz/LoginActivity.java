@@ -1,14 +1,13 @@
 package a1819.m2ihm.sortirametz;
 
-import android.app.ProgressDialog;
+import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.helpers.Logger;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +16,7 @@ import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int REQUEST_SIGNUP = 0;
+    private static final int REQUEST_SINGUP = 0;
 
     @BindView(R.id.edt_login_username) EditText edt_username;
     @BindView(R.id.edt_login_password) EditText edt_password;
@@ -29,37 +28,19 @@ public class LoginActivity extends AppCompatActivity {
             onLoginFailed();
             return;
         }
+        button.setEnabled(false);
 
         String usernameEmail = edt_username.getText().toString();
         String password = edt_password.getText().toString();
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.Theme_AppCompat_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Authenticating...");
-        progressDialog.show();
-
-
-        //TODO login
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onLoginSuccess or onLoginFailed
-                        onLoginSuccess();
-                        // onLoginFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
-
-        button.setEnabled(false);
-
+        if (Logger.INSTANCE.login(new DataBase(this), usernameEmail, password)) onLoginSuccess();
+        else onLoginFailed();
     }
 
 
     @OnClick(R.id.link_login_register) void register() {
         Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
-        startActivityForResult(intent, REQUEST_SIGNUP);
+        startActivityForResult(intent, REQUEST_SINGUP);
     }
 
     @Override
@@ -72,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_SIGNUP){
+        if (requestCode == REQUEST_SINGUP){
             if (resultCode == RESULT_OK) {
                 setResult(RESULT_OK);
                 this.finish();
@@ -108,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login Failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.error_login), Toast.LENGTH_LONG).show();
         btn_login.setEnabled(true);
     }
 

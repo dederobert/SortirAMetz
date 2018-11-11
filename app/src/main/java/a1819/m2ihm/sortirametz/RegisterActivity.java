@@ -1,5 +1,7 @@
 package a1819.m2ihm.sortirametz;
 
+import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.helpers.Logger;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,23 +31,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         btn_register.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this,
-                R.style.Theme_AppCompat_Dialog);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+        String username = edt_username.getText().toString();
+        String email = edt_email.getText().toString();
+        String password = edt_password.getText().toString();
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
 
+        if (Logger.INSTANCE.register(new DataBase(this), username, email, password))
+            onSignupSuccess();
+        else
+            onSignupFailed();
 
     }
 
@@ -68,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Signup failed", Toast.LENGTH_LONG).show();
+        Toast.makeText(getBaseContext(), getResources().getString(R.string.error_register), Toast.LENGTH_LONG).show();
         btn_register.setEnabled(true);
     }
 

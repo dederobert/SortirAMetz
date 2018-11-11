@@ -4,6 +4,7 @@ import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
+import a1819.m2ihm.sortirametz.models.User;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -17,7 +18,7 @@ import java.util.TreeMap;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "VisiteAMetzDB";
 
 
@@ -48,9 +49,10 @@ public class DataBase extends SQLiteOpenHelper {
 
     private static final String KEY_USER_ID = "id";
     private static final String KEY_USER_USERNAME = "username";
+    private static final String KEY_USER_EMAIL = "email";
     private static final String KEY_USER_PASSWORD = "password";
 
-    private static final String[] USER_COLUMNS = {KEY_USER_ID, KEY_USER_USERNAME, KEY_USER_PASSWORD};
+    private static final String[] USER_COLUMNS = {KEY_USER_ID, KEY_USER_USERNAME, KEY_USER_EMAIL, KEY_USER_PASSWORD};
 
 
     public DataBase(Context context) {
@@ -85,6 +87,17 @@ public class DataBase extends SQLiteOpenHelper {
 
         long id = db.insert(TABLE_PLACES, null, values);
         place.setId(id);
+    }
+
+    public void addUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_USERNAME, user.getUsername());
+        values.put(KEY_USER_EMAIL, user.getEmail());
+        values.put(KEY_USER_PASSWORD, user.getPassword());
+
+        long id = db.insert(TABLE_USERS, null, values);
+        user.setId(id);
     }
 
     public void addPlace(Place place) {
@@ -168,6 +181,42 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
         return place;
+    }
+
+    public User getUserFormEmail(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_USERS,
+                USER_COLUMNS,
+                KEY_USER_EMAIL+" = ?",
+                new String[] {email},
+                null,
+                null,
+                null,
+                null
+        );
+        User user = cursorToUser(cursor);
+        db.close();
+        return user;
+    }
+
+    public User getUserFromUsername(String username) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                TABLE_USERS,
+                USER_COLUMNS,
+                KEY_USER_USERNAME+" = ?",
+                new String[] {username},
+                null,
+                null,
+                null,
+                null
+        );
+        User user = cursorToUser(cursor);
+        db.close();
+        return user;
     }
 
     public List<Place> getAllPlaces() {
@@ -320,13 +369,18 @@ public class DataBase extends SQLiteOpenHelper {
         addCategory(db, new Category("restaurant"));
         addCategory(db, new Category("fast-food"));
 
-        addPlace(db, new Place("Troubadour", 49.1205222f,6.1676358f,
-                      "32 rue du Pont des Morts", getCategory(db,"bar"), "Le troub <3",
-                "http://metz.curieux.net/agenda/images/lieux/_31-logo.png"));
-        addPlace(db, new Place("Boogie Burger", 49.1198784f,6.1680732f,
-                "1 rue du Pont des Morts", getCategory(db,"restaurant"),
-                "Hamburger viande & pain maison",
-                "https://media-cdn.tripadvisor.com/media/photo-s/08/84/8d/e2/burger-boogie.jpg"));
+        addPlace(db, new Place("Le Troubadour", 49.1205629f,6.169062000000001f,
+                      "32 rue du Pont des Morts, 57000 Metz, France", getCategory(db,"bar"),
+                "Le troub <3","http://metz.curieux.net/agenda/images/lieux/_31-logo.png"));
+        addPlace(db, new Place("Boogie Burger", 49.1198749f,6.1702619f,
+                "1 rue du Pont des Morts, 5700 Metz, France", getCategory(db,"fast-food"),
+                "Hamburger viande & pain maison","https://media-cdn.tripadvisor.com/media/photo-s/08/84/8d/e2/burger-boogie.jpg"));
+        addPlace(db, new Place("Comédie Café", 49.1203810999999996f, 6.173010899999995f,
+                "2 Rue du Pont des Roches, 57000 Metz, France", getCategory(db, "bar"),
+                "", "http://www.ascmoulinslesmetz.com/wp-content/uploads/2013/03/comedie-cafe1.png"));
+        addPlace(db, new Place("City wok", 49.116267000000001f, 6.177634f,
+                "40 Rue de la Chèvre, 57000 Metz, France", getCategory(db ,"restaurant"),
+                "", "https://img.over-blog-kiwi.com/1020x765/1/26/14/30/20141019/ob_82fa48_sushi-city-wok.jpg"));
     }
 
     @Override
@@ -347,6 +401,7 @@ public class DataBase extends SQLiteOpenHelper {
         String createUserTable = "CREATE TABLE "+TABLE_USERS+" ("+
                 KEY_USER_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 KEY_USER_USERNAME+" TINYTEXT,"+
+                KEY_USER_EMAIL+ " TINYTEXT,"+
                 KEY_USER_PASSWORD+" TEXT)";
 
         db.execSQL(createCategoryTable);
@@ -379,4 +434,22 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return category;
     }
+
+    private User cursorToUser(Cursor cursor) {
+        User user = null;
+        if (cursor != null && cursor.moveToFirst()){
+            user = new User();
+
+            user.setId(cursor.getLong(0));
+            user.setUsername(cursor.getString(1));
+            user.setEmail(cursor.getString(2));
+            user.setPassword(cursor.getString(3));
+
+            cursor.close();
+
+        }
+        return user;
+    }
+
+
 }

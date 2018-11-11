@@ -1,6 +1,7 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.helpers.Logger;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.listeners.FilterButtonListener;
 import a1819.m2ihm.sortirametz.map.Locator;
@@ -40,7 +41,8 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_LOGIN);
+        if (!Logger.INSTANCE.isLogged())
+            startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_LOGIN);
 
         dataBase = new DataBase(this);
         locator = new Locator(this);
