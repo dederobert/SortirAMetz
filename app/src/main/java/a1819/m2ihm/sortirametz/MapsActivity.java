@@ -1,7 +1,9 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.listeners.FilterButtonListener;
+import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
 import android.Manifest;
 import android.content.Intent;
@@ -35,17 +37,21 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
         dataBase = new DataBase(this);
         locator = new Locator(this);
 
         edt_filter_radius = findViewById(R.id.edt_filter_radius);
+        //Change the symbol of radius according to preferences
+        edt_filter_radius.setHint(edt_filter_radius.getHint()
+                +" ("+ PreferencesHelper.INSTANCE.getUnit(this).getSymbol()+")");
         spi_filter_category = findViewById(R.id.spi_filter_category);
         btn_filter = findViewById(R.id.btn_filter);
         btn_filter.setOnClickListener(new FilterButtonListener(this));
 
         //Set spinner content
         List<Category> categories = dataBase.getAllCategories();
-        categories.add(0, new Category(getResources().getString(R.string.all)));
+        categories.add(0, new Category(getResources().getString(R.string.all), true));
         spi_filter_category.setOnItemSelectedListener(this);
         ArrayAdapter<Category> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
@@ -101,6 +107,10 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.menu_map:
                 return true;
+            case R.id.menu_setting:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -119,4 +129,5 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onNothingSelected(AdapterView<?> parent) {
         this.selectedCategory = null;
     }
+
 }
