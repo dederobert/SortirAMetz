@@ -101,7 +101,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
 
     private void startPicker() {
         PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-        builder.setLatLngBounds(LatLngBounds.builder().include(MapsActivity.METZ_LATITUDE_LONGITUDE).build());
+        builder.setLatLngBounds(LatLngBounds.builder().include(Locator.METZ_LATITUDE_LONGITUDE).build());
         try {
             startActivityForResult(builder.build(this), PLACE_PICKER_REQUEST);
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {

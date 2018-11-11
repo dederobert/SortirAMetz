@@ -31,7 +31,7 @@
                 android:ems="10"
                 android:id="@+id/edt_filter_radius"
                 android:hint="@string/radius"
-                android:inputType="textPersonName"
+                android:inputType="number"
                 android:layout_toEndOf="@id/lbl_filter"
                 android:layout_centerVertical="true"
                 />
@@ -50,6 +50,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_filter"
                 android:layout_toEndOf="@id/spi_filter_category"
+                android:background="@color/colorPrimary"
+                android:textColor="@android:color/white"
                 />
     </RelativeLayout>
 

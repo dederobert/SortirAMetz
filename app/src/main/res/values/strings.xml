@@ -18,10 +18,11 @@
     <string name="error_image_load">Impossible to load place icon</string>
     <string name="edit">Edit</string>
     <string name="needed_loaction">Application need loaction to work</string>
-    <string name="radius">Radius</string>
+    <string name="radius">Radius (m)</string>
     <string name="filter">Filter</string>
     <string name="coord">Coordonates</string>
     <string name="place_picked">Place picked !</string>
     <string name="add_title">Add a place</string>
     <string name="edit_title">Edit</string>
+    <string name="all">All</string>
 </resources>

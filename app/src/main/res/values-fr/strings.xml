@@ -18,10 +18,11 @@
     <string name="error_image_load">Impossible de charger l\'icon</string>
     <string name="edit">Editer</string>
     <string name="needed_loaction">L\'application a besoins de la localisation pour fonctionner</string>
-    <string name="radius">Rayon</string>
+    <string name="radius">Rayon (m)</string>
     <string name="filter">Filtrer</string>
     <string name="coord">Coordonées</string>
     <string name="place_picked">Lieu selectionné !</string>
     <string name="add_title">Ajouter un lieu</string>
     <string name="edit_title">Editer</string>
+    <string name="all">Tous</string>
 </resources>
