@@ -115,7 +115,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
-                com.google.android.gms.location.places.Place place = PlacePicker.getPlace(data, this);
+                com.google.android.gms.location.places.Place place = PlacePicker.getPlace(this, data);
                 edt_coord.setText(place.getLatLng().latitude + ", " +place.getLatLng().longitude);
                 if (add) edt_address.setText(place.getAddress());
                 if (add) edt_name.setText(place.getName());

@@ -17,18 +17,22 @@ import java.util.TreeMap;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "VisiteAMetzDB";
 
 
     private static final String TABLE_CATEGORIES = "categories";
     private static final String TABLE_PLACES = "places";
+    private static final String TABLE_USERS = "users";
 
+    //TABLE CATEGORY
     private static final String KEY_CATEGORY_ID = "id";
     private static final String KEY_CATEGORY_DESCRIPTION = "description";
 
     private static final String[] CATEGORY_COLUMNS = {KEY_CATEGORY_ID, KEY_CATEGORY_DESCRIPTION};
 
+
+    //TABLE PLACES
     private static final String KEY_PLACE_ID = "id";
     private static final String KEY_PLACE_NAME = "name";
     private static final String KEY_PLACE_LATITUDE = "latitude";
@@ -41,6 +45,13 @@ public class DataBase extends SQLiteOpenHelper {
 
     private static final String[] PLACE_COLUMNS = {KEY_PLACE_ID, KEY_PLACE_NAME, KEY_PLACE_LATITUDE,
             KEY_PLACE_LONGITUDE, KEY_PLACE_ADDRESS, KEY_PLACE_CATEGORY_ID, KEY_PLACE_DESCRIPTION, KEY_PLACE_ICON};
+
+    private static final String KEY_USER_ID = "id";
+    private static final String KEY_USER_USERNAME = "username";
+    private static final String KEY_USER_PASSWORD = "password";
+
+    private static final String[] USER_COLUMNS = {KEY_USER_ID, KEY_USER_USERNAME, KEY_USER_PASSWORD};
+
 
     public DataBase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -186,23 +197,6 @@ public class DataBase extends SQLiteOpenHelper {
 
         return categories;
     }
-
-    /*public List<String> getAllCategoriesName() {
-        List<String> names = new LinkedList<>();
-        String query = "SELECT "+KEY_CATEGORY_DESCRIPTION+" FROM "+TABLE_CATEGORIES;
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        String name = null;
-        if (cursor.moveToFirst()) {
-            do {
-                name = cursor.getString(0);
-            }while (cursor.moveToNext());
-        }
-        cursor.close();
-        db.close();
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all categories name "+names.toString());
-        return names;
-    }*/
 
     public List<Recyclerable> getAllPlacesGroupByCategory() {
         List<Recyclerable> recyclerables = new LinkedList<>();
@@ -350,9 +344,14 @@ public class DataBase extends SQLiteOpenHelper {
                 KEY_PLACE_DESCRIPTION+" TEXT," +
                 KEY_PLACE_ICON+" TEXT," +
                 "FOREIGN KEY ("+KEY_PLACE_CATEGORY_ID+") REFERENCES "+TABLE_CATEGORIES+"("+KEY_CATEGORY_ID+"))";
+        String createUserTable = "CREATE TABLE "+TABLE_USERS+" ("+
+                KEY_USER_ID+" INTEGER PRIMARY KEY AUTOINCREMENT,"+
+                KEY_USER_USERNAME+" TINYTEXT,"+
+                KEY_USER_PASSWORD+" TEXT)";
 
         db.execSQL(createCategoryTable);
         db.execSQL(createPlaceTable);
+        db.execSQL(createUserTable);
         insertDefaultValues(db);
     }
 
@@ -360,6 +359,7 @@ public class DataBase extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_PLACES);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_CATEGORIES);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_USERS);
         this.onCreate(db);
     }
 

@@ -26,6 +26,15 @@
     <string name="edit_title">Editer</string>
     <string name="all">Tous</string>
 
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="username_login">Nom d\'utilisateur / email</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Connection</string>
+    <string name="register">Pas de compte? Créer un</string>
+    <string name="email">Email</string>
+    <string name="create_account">Créer un compte</string>
+    <string name="already_member">Déjà membre? Connection</string>
+
     <string name="title_activity_settings">Paramètres</string>
 
     <!-- Strings related to Settings -->

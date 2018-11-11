@@ -3,7 +3,6 @@ package a1819.m2ihm.sortirametz.map;
 import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.MapsActivity;
 import a1819.m2ihm.sortirametz.R;
-import a1819.m2ihm.sortirametz.helpers.MathHelper;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.listeners.CameraListener;
 import a1819.m2ihm.sortirametz.models.Category;
@@ -26,7 +25,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.*;
-import com.google.android.gms.maps.model.internal.zzp;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 
