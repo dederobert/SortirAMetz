@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+            android:key="unit_distance"
+            android:title="@string/pref_title_unit_distance"
+            android:defaultValue="m"
+            android:entries="@array/pref_unit_list_distance"
+            android:entryValues="@array/pref_unit_list_values_distance"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"/>
+</PreferenceScreen>

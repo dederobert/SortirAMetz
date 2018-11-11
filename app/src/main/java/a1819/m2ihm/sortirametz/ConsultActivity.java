@@ -87,6 +87,10 @@ public class ConsultActivity extends AppCompatActivity {
             case R.id.menu_map:
                 goToMap();
                 return true;
+            case R.id.menu_setting:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
