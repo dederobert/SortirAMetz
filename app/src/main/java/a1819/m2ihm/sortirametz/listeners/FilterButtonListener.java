@@ -15,7 +15,7 @@ public class FilterButtonListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        String entry = activity.edt_filter_radius.getText().toString();
+        String entry = activity.getRadius();
         int radius;
         if (entry!=null && !entry.equals(""))
             radius = Integer.parseInt(entry);

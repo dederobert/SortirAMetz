@@ -113,6 +113,9 @@
     <string name="pref_header_unit">Unités</string>
 
     <string name="pref_title_unit_distance">Distance</string>
+    <string name="error_username">Enter a valid username or email</string>
+    <string name="error_password">more 6 characters</string>
+    <string name="error_email">enter a valid email</string>
     <string-array name="pref_unit_list_distance">
         <item>m</item>
         <item>ft</item>

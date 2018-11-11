@@ -69,7 +69,7 @@
                 android:layout_marginBottom="@dimen/list_item_padding_login"
                 android:layout_below="@id/lbl_register_password"/>
 
-        <TextView android:id="@+id/link_login_register"
+        <TextView android:id="@+id/link_register_login"
                   android:layout_width="fill_parent"
                   android:layout_height="wrap_content"
                   android:layout_marginBottom="24dp"
