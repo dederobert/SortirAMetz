@@ -14,7 +14,6 @@ import android.util.Log;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeMap;
 
 public class DataBase extends SQLiteOpenHelper {
 
@@ -89,7 +88,7 @@ public class DataBase extends SQLiteOpenHelper {
         place.setId(id);
     }
 
-    public void addUser(User user) {
+    public User addUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_USERNAME, user.getUsername());
@@ -98,12 +97,14 @@ public class DataBase extends SQLiteOpenHelper {
 
         long id = db.insert(TABLE_USERS, null, values);
         user.setId(id);
+        return user;
     }
 
-    public void addPlace(Place place) {
+    public Place addPlace(Place place) {
         SQLiteDatabase db = this.getWritableDatabase();
         addPlace(db, place);
         db.close();
+        return place;
     }
 
     public Category getCategory(int id) {
@@ -314,7 +315,7 @@ public class DataBase extends SQLiteOpenHelper {
         return i;
     }
 
-    public int updatePlace(Place place) {
+    public Place updatePlace(Place place) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -336,8 +337,26 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update placeFragment :"+place);
-        return i;
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update place :"+place);
+        return place;
+    }
+
+    public User updateUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(KEY_USER_USERNAME, user.getUsername());
+        values.put(KEY_USER_EMAIL, user.getEmail());
+        values.put(KEY_USER_PASSWORD, user.getPassword());
+        
+        int i = db.update(
+                TABLE_USERS,
+                values,
+                KEY_USER_ID+" = ?",
+                new String[] {String.valueOf(user.getId())}
+        );
+        db.close();
+        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update user :"+user);
+        return user;
     }
 
     public void deleteCategory(Category category) {
@@ -451,5 +470,6 @@ public class DataBase extends SQLiteOpenHelper {
         return user;
     }
 
-
+    public User getUserFromId(long id) {
+    }
 }
