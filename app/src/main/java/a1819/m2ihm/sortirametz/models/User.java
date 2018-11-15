@@ -13,7 +13,7 @@ public class User {
         this(-1, username, email, password);
     }
 
-    public User(long id, String username, String email, String password) {
+    private User(long id, String username, String email, String password) {
         this.id = id;
         this.username = username;
         this.email = email;

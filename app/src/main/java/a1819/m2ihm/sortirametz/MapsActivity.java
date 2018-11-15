@@ -1,6 +1,7 @@
 package a1819.m2ihm.sortirametz;
 
-import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
+import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.helpers.Logger;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.listeners.FilterButtonListener;
@@ -22,14 +23,13 @@ import butterknife.ButterKnife;
 import com.google.android.gms.maps.MapFragment;
 
 import java.util.List;
+import java.util.Objects;
 
 public class MapsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_LOGIN = 14;
     public Locator locator;
-
-    public DataBase dataBase;
 
     @BindView(R.id.edt_filter_radius) EditText edt_filter_radius;
     @BindView(R.id.spi_filter_category) Spinner spi_filter_category;
@@ -44,7 +44,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         if (!Logger.INSTANCE.isLogged())
             startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_LOGIN);
 
-        dataBase = new DataBase(this);
+        CategoryDAO categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultActivity.FACTORY_TYPE)).getCategoryDAO();
         locator = new Locator(this);
 
         ButterKnife.bind(this);
@@ -58,7 +58,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         btn_filter.setOnClickListener(new FilterButtonListener(this));
 
         //Set spinner content
-        List<Category> categories = dataBase.getAllCategories();
+        List<Category> categories = categoryDAO.findAll();//dataBase.getAllCategories();
         categories.add(0, new Category(getResources().getString(R.string.all), true));
         spi_filter_category.setOnItemSelectedListener(this);
         ArrayAdapter<Category> adapter =

@@ -1,6 +1,5 @@
 package a1819.m2ihm.sortirametz;
 
-import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.helpers.Logger;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         String usernameEmail = edt_username.getText().toString();
         String password = edt_password.getText().toString();
 
-        if (Logger.INSTANCE.login(new DataBase(this), usernameEmail, password)) onLoginSuccess();
+        if (Logger.INSTANCE.login(this, usernameEmail, password)) onLoginSuccess();
         else onLoginFailed();
     }
 

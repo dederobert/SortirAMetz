@@ -2,8 +2,6 @@ package a1819.m2ihm.sortirametz.map;
 
 import a1819.m2ihm.sortirametz.models.Category;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class MapFilter {
     private Category category = null;
 
 
-    public  MapFilter(List<Locator.CustomMarker> markers) {
+    MapFilter(List<Locator.CustomMarker> markers) {
         this.markers = markers;
     }
 
@@ -57,7 +55,7 @@ public class MapFilter {
         this.category = category;
     }
 
-    public void setCurrentLocation(Location currentLocation) {
+    void setCurrentLocation(Location currentLocation) {
         this.currentLocation = currentLocation;
     }
 }

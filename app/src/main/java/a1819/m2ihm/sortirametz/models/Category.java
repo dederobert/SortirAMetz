@@ -60,7 +60,4 @@ public class Category implements Recyclerable {
         return mockCategory;
     }
 
-    public void setMockCategory(boolean mockCategory) {
-        this.mockCategory = mockCategory;
-    }
 }

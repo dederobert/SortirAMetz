@@ -1,6 +1,8 @@
 package a1819.m2ihm.sortirametz;
 
-import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
+import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
+import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
@@ -20,14 +22,17 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
+//TODO update this class
 public class PlaceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnFocusChangeListener {
 
 
     public static final int RESULT_ADD = 10;
     public static final int RESULT_EDIT = 11;
 
-    private DataBase dataBase;
+    private PlaceDAO placeDAO;
     private RelativeLayout place_main_layout;
     private EditText edt_name;
     private EditText edt_coord;
@@ -53,8 +58,11 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         long placeId = getIntent().getLongExtra("placeId", -1);
         this.add = (placeId==-1);
 
-        dataBase = new DataBase(this);
-        if (!add) place = dataBase.getPlace(placeId);
+        AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultActivity.FACTORY_TYPE));
+        placeDAO = factory.getPlaceDAO();
+        CategoryDAO categoryDAO = factory.getCategoryDAO();
+
+        if (!add) place = placeDAO.find(placeId);
         else place = new Place();
 
         if (add)
@@ -78,7 +86,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         Button btn_cancel = findViewById(R.id.btn_cancel);
 
         //Set spinner content
-        List<Category> categories = dataBase.getAllCategories();
+        List<Category> categories = categoryDAO.findAll();
         spi_category.setOnItemSelectedListener(this);
         ArrayAdapter<Category> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
@@ -90,7 +98,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
 
         if (!add) {
             edt_name.setText(place.getName());
-            edt_coord.setText(place.getLatitude()+", "+place.getLongitude());
+            edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatitude(),place.getLongitude()));
             edt_address.setText(place.getAddress());
             edt_description.setText(place.getDescription());
             edt_icon.setText(place.getIcon());
@@ -116,7 +124,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         if (requestCode == PLACE_PICKER_REQUEST) {
             if (resultCode == RESULT_OK) {
                 com.google.android.gms.location.places.Place place = PlacePicker.getPlace(this, data);
-                edt_coord.setText(place.getLatLng().latitude + ", " +place.getLatLng().longitude);
+                edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatLng().latitude, place.getLatLng().longitude));
                 if (add) edt_address.setText(place.getAddress());
                 if (add) edt_name.setText(place.getName());
                 this.place.setLatitude((float) place.getLatLng().latitude);
@@ -135,7 +143,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                 place.setCategory(selectedCategory);
                 place.setDescription(edt_description.getText().toString());
                 place.setIcon(edt_icon.getText().toString());
-                dataBase.addPlace(place);
+                placeDAO.create(place);
                 ConsultActivity.adapter.insertPlace(place);
                 this.setResult(RESULT_OK);
             } else {
@@ -144,7 +152,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                 place.setCategory(selectedCategory);
                 place.setDescription(edt_description.getText().toString());
                 place.setIcon(edt_icon.getText().toString());
-                dataBase.updatePlace(place);
+                placeDAO.update(place);
                 this.setResult(RESULT_OK);
             }
             this.finish();

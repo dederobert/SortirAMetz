@@ -3,6 +3,7 @@ package a1819.m2ihm.sortirametz.map;
 import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.MapsActivity;
 import a1819.m2ihm.sortirametz.R;
+import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.listeners.CameraListener;
 import a1819.m2ihm.sortirametz.models.Category;
@@ -10,9 +11,7 @@ import a1819.m2ihm.sortirametz.models.Place;
 import android.Manifest;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -30,6 +29,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import static a1819.m2ihm.sortirametz.MapsActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
@@ -39,7 +39,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
         private Category category;
         private Marker marker;
 
-        public CustomMarker(@NonNull Marker marker,@NonNull Category category) {
+        CustomMarker(@NonNull Marker marker, @NonNull Category category) {
             this.category = category;
             this.marker = marker;
         }
@@ -49,7 +49,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
             return category;
         }
 
-        public Marker getMarker() {
+        Marker getMarker() {
             return marker;
         }
     }
@@ -79,7 +79,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
     /**
      * Create the location request used to get user location
      */
-    protected void createLocationrequest() {
+    private void createLocationrequest() {
 
         //Creation d'une request pour la localisation
         locationRequest = new LocationRequest();
@@ -167,7 +167,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
         mMap = googleMap;
 
         //On place tout les points sur la carte
-        List<Place> places = this.activity.dataBase.getAllPlaces();
+        List<Place> places = Objects.requireNonNull(AbstractDAOFactory.getFactory(this.activity, ConsultActivity.FACTORY_TYPE)).getPlaceDAO().findAll();
         for (Place place : places) {
             LatLng coordPlace = new LatLng(place.getLatitude(), place.getLongitude());
             markers.add(new CustomMarker(

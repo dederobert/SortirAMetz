@@ -1,16 +1,16 @@
 package a1819.m2ihm.sortirametz.bdd.dao;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-public abstract class DAO<T> {
+import java.util.List;
 
-    protected Context context;
-    public DAO(Context context) {
-        this.context = context;
-    }
+public interface DAO<T> {
 
-    public abstract T find(long id);
-    public abstract T create(T obj);
-    public abstract T update(T obj);
-    public abstract void delete(T obj);
+    public List<T> findAll();
+    public @Nullable T find(long id);
+    public T create(@NonNull T obj);
+    public T update(@NonNull T obj);
+    public void delete(@NonNull T obj);
 }

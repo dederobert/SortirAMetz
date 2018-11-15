@@ -67,10 +67,11 @@ public class DataBase extends SQLiteOpenHelper {
         db.insert(TABLE_CATEGORIES, null, values);
     }
 
-    public void addCategory(Category category) {
+    public Category addCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         addCategory(db, category);
         db.close();
+        return category;
     }
 
     private void addPlace(SQLiteDatabase db, Place place) {
@@ -107,7 +108,7 @@ public class DataBase extends SQLiteOpenHelper {
         return place;
     }
 
-    public Category getCategory(int id) {
+    public Category getCategory(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -258,7 +259,7 @@ public class DataBase extends SQLiteOpenHelper {
         return recyclerables;
     }
 
-    public List<Place> getAllPlaces(Category category) {
+    private List<Place> getAllPlaces(Category category) {
         return getAllPlaces(category, false);
     }
 
@@ -266,7 +267,7 @@ public class DataBase extends SQLiteOpenHelper {
         return getAllPlaces(null, sortByCategory);
     }
 
-    public List<Place> getAllPlaces(Category category, boolean sortByCategory) {
+    private List<Place> getAllPlaces(Category category, boolean sortByCategory) {
         List<Place> places = new LinkedList<>();
         String query = "SELECT * FROM "+TABLE_PLACES
                 + (category!=null?" WHERE "+KEY_PLACE_CATEGORY_ID+" = "+category.getId():"")
@@ -296,7 +297,7 @@ public class DataBase extends SQLiteOpenHelper {
         return places;
     }
 
-    public int updateCategory(Category category) {
+    public Category updateCategory(Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -312,7 +313,7 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
 
         Log.d(ConsultActivity.APP_TAG, "[SQLite]Update category :"+category);
-        return i;
+        return category;
     }
 
     public Place updatePlace(Place place) {
@@ -471,5 +472,10 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     public User getUserFromId(long id) {
+        return null;
+    }
+
+    public List<User> getAllUsers() {
+        return new LinkedList<>();
     }
 }

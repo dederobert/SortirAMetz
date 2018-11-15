@@ -2,26 +2,26 @@ package a1819.m2ihm.sortirametz.adapter;
 
 import a1819.m2ihm.sortirametz.ConsultActivity;
 import a1819.m2ihm.sortirametz.R;
-import a1819.m2ihm.sortirametz.bdd.DataBase;
+import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static final int LAYOUT_HEADER= 0;
     private static final int LAYOUT_CHILD= 1;
 
-    List<Recyclerable> places;
-    ConsultActivity context;
+    private List<Recyclerable> places;
+    private ConsultActivity context;
 
     public ListAdapter(ConsultActivity context, List<Recyclerable> places) {
         this.places = places;
@@ -36,8 +36,9 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             return LAYOUT_CHILD;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         if (viewType==LAYOUT_HEADER){
             View view = LayoutInflater.from(parent.getContext())
@@ -52,7 +53,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType()==LAYOUT_HEADER){
             Category category = (Category) places.get(position);
             ((CategoryListHolder)holder).bind(category);
@@ -78,16 +79,14 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         notifyItemInserted(position);
     }
 
-    public List<Recyclerable> getPlaces() {
-        return places;
-    }
-
     public Recyclerable getPlace(int position) {
         return places.get(position);
     }
 
-    public void removeItemFromDatabase(Place place) {
-        context.getDataBase().deletePlace(place);
+
+    public void removePlaceFromDatabase(Place place) {
+        Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultActivity.FACTORY_TYPE))
+                .getPlaceDAO().delete(place);
     }
 
     public void updateItems(List<Recyclerable> places) {

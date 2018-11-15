@@ -1,51 +1,47 @@
-package a1819.m2ihm.sortirametz.bdd.dao.sqlite;
+package a1819.m2ihm.sortirametz.bdd.dao.mariadb;
 
-import a1819.m2ihm.sortirametz.bdd.dao.DAO;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
-import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
-import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class SQLitePlaceDAO extends SQLiteDAO<Place> implements PlaceDAO {
-
-    public SQLitePlaceDAO(Context context) {
+public final class MariaDBPlaceDAO extends MariaDBDAO<Place> implements PlaceDAO {
+    public MariaDBPlaceDAO(Context context) {
         super(context);
     }
 
     @Override
     public List<Place> findAll() {
-        return this.dataBase.getAllPlaces();
+        return null;
     }
 
     @Nullable
     @Override
     public Place find(long id) {
-        return this.dataBase.getPlace(id);
+        return null;
     }
 
     @Override
     public Place create(@NonNull Place obj) {
-        return this.dataBase.addPlace(obj);
+        return null;
     }
 
     @Override
     public Place update(@NonNull Place obj) {
-        return this.dataBase.updatePlace(obj);
+        return null;
     }
 
     @Override
     public void delete(@NonNull Place obj) {
-        this.dataBase.deletePlace(obj);
+
     }
 
     @Override
     public List<Recyclerable> findAllGroupByCategory() {
-        return this.dataBase.getAllPlacesGroupByCategory();
+        return null;
     }
 }

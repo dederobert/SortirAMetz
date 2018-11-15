@@ -1,8 +1,6 @@
 package a1819.m2ihm.sortirametz;
 
-import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.helpers.Logger;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = edt_password.getText().toString();
 
 
-        if (Logger.INSTANCE.register(new DataBase(this), username, email, password))
+        if (Logger.INSTANCE.register(this, username, email, password))
             onSignupSuccess();
         else
             onSignupFailed();
@@ -55,18 +53,18 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void onSignupSuccess() {
+    private void onSignupSuccess() {
         btn_register.setEnabled(true);
         setResult(RESULT_OK);
         finish();
     }
 
-    public void onSignupFailed() {
+    private void onSignupFailed() {
         Toast.makeText(getBaseContext(), getResources().getString(R.string.error_register), Toast.LENGTH_LONG).show();
         btn_register.setEnabled(true);
     }
 
-    public boolean validate() {
+    private boolean validate() {
         boolean valid = true;
 
         String username = edt_username.getText().toString();
