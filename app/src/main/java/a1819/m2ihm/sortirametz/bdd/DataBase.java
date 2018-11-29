@@ -438,6 +438,7 @@ public class DataBase extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
+
     private Category cursorToCategory(Cursor cursor) {
         Category category = new Category();
 

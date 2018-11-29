@@ -5,12 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
+
+import static android.view.KeyEvent.KEYCODE_ENTER;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -21,8 +27,16 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.edt_login_password) EditText edt_password;
     @BindView(R.id.btn_login_login) Button btn_login;
 
+    @OnEditorAction(R.id.edt_login_password) boolean onEditorAction(int actionId, KeyEvent event) {
+        if (actionId != 0 || event.getAction()==KeyEvent.ACTION_DOWN) {
+            Log.d("LOGIN ACTIVITY","DONE clicked");
+            login(btn_login);
+        }
+        return false;
+    }
     @OnClick(R.id.btn_login_login) void login(Button button) {
 
+        Log.d("LOGIN ACTIVITY","Login");
         if (!validate()) {
             onLoginFailed();
             return;
@@ -31,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
 
         String usernameEmail = edt_username.getText().toString();
         String password = edt_password.getText().toString();
+
 
         if (Logger.INSTANCE.login(this, usernameEmail, password)) onLoginSuccess();
         else onLoginFailed();
@@ -47,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
+        edt_password.setImeActionLabel(this.getResources().getString(R.string.login), KEYCODE_ENTER);
     }
 
     @Override

@@ -118,6 +118,8 @@
     <string name="error_email">enter a valid email</string>
     <string name="error_register">Signup failed</string>
     <string name="error_login">Login Failed</string>
+    <string name="too_long_number">The given number is too long</string>
+    <string name="disconnect">Disconnect</string>
     <string-array name="pref_unit_list_distance">
         <item>m</item>
         <item>ft</item>

@@ -57,7 +57,9 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
 
         //Display a snack bar with undo button
         Snackbar snackbar = Snackbar.
-                make(activity.mainLayout, name + " " + R.string.element_removed, Snackbar.LENGTH_LONG);
+                make(activity.mainLayout,
+                        name + " " + activity.getResources().getString(R.string.element_removed),
+                        Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.undo, new View.OnClickListener() {
 
             @Override

@@ -13,10 +13,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.widget.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,10 +27,10 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int REQUEST_LOGIN = 14;
     public Locator locator;
-
+    private FilterButtonListener filterListener;
     @BindView(R.id.edt_filter_radius) EditText edt_filter_radius;
     @BindView(R.id.spi_filter_category) Spinner spi_filter_category;
-    @BindView(R.id.btn_filter) Button btn_filter;
+    //@BindView(R.id.btn_filter) Button btn_filter;
     public Category selectedCategory;
 
     @Override
@@ -41,7 +38,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        if (!Logger.INSTANCE.isLogged())
+        if (!Logger.INSTANCE.isLogged(this))
             startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_LOGIN);
 
         CategoryDAO categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultActivity.FACTORY_TYPE)).getCategoryDAO();
@@ -55,7 +52,11 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
         //Change the symbol of radius according to preferences
         edt_filter_radius.setHint(edt_filter_radius.getHint()
                 +" ("+ PreferencesHelper.INSTANCE.getUnit(this).getSymbol()+")");
-        btn_filter.setOnClickListener(new FilterButtonListener(this));
+        edt_filter_radius.setImeActionLabel(this.getResources().getString(R.string.filter), KeyEvent.KEYCODE_ENTER);
+        filterListener = new FilterButtonListener(this);
+
+        edt_filter_radius.setOnEditorActionListener(filterListener);
+        //btn_filter.setOnClickListener(filterListener);
 
         //Set spinner content
         List<Category> categories = categoryDAO.findAll();//dataBase.getAllCategories();
@@ -109,6 +110,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch (item.getItemId()){
             case R.id.menu_consult:
                 goToConsult();
@@ -116,8 +118,14 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.menu_map:
                 return true;
             case R.id.menu_setting:
-                Intent intent = new Intent(this, SettingsActivity.class);
+                intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                return true;
+            case R.id.menu_disconnect:
+                Logger.INSTANCE.disconnect(this);
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                this.finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -131,6 +139,7 @@ public class MapsActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         this.selectedCategory = (Category)parent.getItemAtPosition(position);
+        this.filterListener.filter();
     }
 
     @Override
