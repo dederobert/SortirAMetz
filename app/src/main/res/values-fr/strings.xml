@@ -26,6 +26,15 @@
     <string name="edit_title">Editer</string>
     <string name="all">Tous</string>
 
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="username_login">Nom d\'utilisateur / email</string>
+    <string name="password">Mot de passe</string>
+    <string name="login">Connection</string>
+    <string name="register">Pas de compte? Créer un</string>
+    <string name="email">Email</string>
+    <string name="create_account">Créer un compte</string>
+    <string name="already_member">Déjà membre? Connection</string>
+
     <string name="title_activity_settings">Paramètres</string>
 
     <!-- Strings related to Settings -->
@@ -104,6 +113,13 @@
     <string name="pref_header_unit">Unités</string>
 
     <string name="pref_title_unit_distance">Distance</string>
+    <string name="error_username">Enter a valid username or email</string>
+    <string name="error_password">more 6 characters</string>
+    <string name="error_email">enter a valid email</string>
+    <string name="error_register">Signup failed</string>
+    <string name="error_login">Login Failed</string>
+    <string name="too_long_number">The given number is too long</string>
+    <string name="disconnect">Disconnect</string>
     <string-array name="pref_unit_list_distance">
         <item>m</item>
         <item>ft</item>

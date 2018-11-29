@@ -15,20 +15,17 @@ public class PlaceListHolder extends RecyclerView.ViewHolder{
     private ImageView placeIcon;
     private TextView placeNameView;
     private TextView placeAddressView;
-
-    public RelativeLayout viewBackground;
     public RelativeLayout viewForeground;
 
-    public PlaceListHolder(View itemView) {
+    PlaceListHolder(View itemView) {
         super(itemView);
-        placeIcon = (ImageView) itemView.findViewById(R.id.placeIcon);
-        placeNameView = (TextView) itemView.findViewById(R.id.placeName);
-        placeAddressView = (TextView) itemView.findViewById(R.id.placeAddress);
-        viewBackground = (RelativeLayout) itemView.findViewById(R.id.view_background);
-        viewForeground = (RelativeLayout) itemView.findViewById(R.id.view_foreground);
+        placeIcon = itemView.findViewById(R.id.placeIcon);
+        placeNameView = itemView.findViewById(R.id.placeName);
+        placeAddressView = itemView.findViewById(R.id.placeAddress);
+        viewForeground = itemView.findViewById(R.id.view_foreground);
     }
 
-    public void bind(Place place) {
+    void bind(Place place) {
         Picasso.get().load(Uri.parse(place.getIcon())).into(placeIcon);
         placeNameView.setText(place.getName());
         placeAddressView.setText(place.getAddress());
