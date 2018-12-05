@@ -1,7 +1,6 @@
 package a1819.m2ihm.sortirametz.helpers;
 
-import a1819.m2ihm.sortirametz.ConsultActivity;
-import a1819.m2ihm.sortirametz.MapsActivity;
+import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
@@ -78,7 +77,7 @@ public enum Logger {
      * @return True if log successfully
      */
     public boolean login(@NonNull Context context, @NonNull String usernameEmail, @NonNull String password) {
-        AbstractDAOFactory factory = AbstractDAOFactory.getFactory(context, ConsultActivity.FACTORY_TYPE);
+        AbstractDAOFactory factory = AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE);
         assert factory != null;
         UserDAO dao = factory.getUserDAO();
         User user;
@@ -132,7 +131,7 @@ public enum Logger {
      * @return True if register
      */
     public boolean register(Context context, String username, String email, String password) {
-        UserDAO dao = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultActivity.FACTORY_TYPE)).getUserDAO();
+        UserDAO dao = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE)).getUserDAO();
         User user = new User(username, email, password);
         if (dao.findByUsername(username)!=null || dao.findByEmail(email) != null)
             return false;

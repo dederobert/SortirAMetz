@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.bdd;
 
-import a1819.m2ihm.sortirametz.ConsultActivity;
+import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
@@ -59,7 +59,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     private void addCategory(SQLiteDatabase db, Category category) {
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Add category :"+category.toString());
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Add category :"+category.toString());
 
         ContentValues values = new ContentValues();
         values.put(KEY_CATEGORY_DESCRIPTION, category.getDescription());
@@ -75,7 +75,7 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
     private void addPlace(SQLiteDatabase db, Place place) {
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Add placeFragment :"+place.toString());
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Add placeFragment :"+place.toString());
         ContentValues values = new ContentValues();
         values.put(KEY_PLACE_NAME, place.getName());
         values.put(KEY_PLACE_LATITUDE, place.getLatitude());
@@ -176,9 +176,9 @@ public class DataBase extends SQLiteOpenHelper {
 
             cursor.close();
 
-            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get placeFragment with id "+id+":"+place.toString());
+            Log.d(ConsultFragment.APP_TAG, "[SQLite]Get placeFragment with id "+id+":"+place.toString());
         }else{
-            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get placeFragment with id "+id);
+            Log.w(ConsultFragment.APP_TAG, "[SQLite]Impossible to get placeFragment with id "+id);
         }
 
         db.close();
@@ -244,7 +244,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all categories "+categories.toString());
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Get all categories "+categories.toString());
 
         return categories;
     }
@@ -255,7 +255,7 @@ public class DataBase extends SQLiteOpenHelper {
             recyclerables.add(category);
             recyclerables.addAll(getAllPlaces(category));
         }
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]"+recyclerables.toString());
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]"+recyclerables.toString());
         return recyclerables;
     }
 
@@ -293,7 +293,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         cursor.close();
         db.close();
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Get all places "+places.toString());
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Get all places "+places.toString());
         return places;
     }
 
@@ -312,7 +312,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update category :"+category);
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Update category :"+category);
         return category;
     }
 
@@ -338,7 +338,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         db.close();
 
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update place :"+place);
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Update place :"+place);
         return place;
     }
 
@@ -356,7 +356,7 @@ public class DataBase extends SQLiteOpenHelper {
                 new String[] {String.valueOf(user.getId())}
         );
         db.close();
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Update user :"+user);
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Update user :"+user);
         return user;
     }
 
@@ -369,7 +369,7 @@ public class DataBase extends SQLiteOpenHelper {
         );
         db.close();
 
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Delete category :"+category);
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Delete category :"+category);
     }
 
     public void deletePlace(Place place) {
@@ -381,7 +381,7 @@ public class DataBase extends SQLiteOpenHelper {
         );
         db.close();
 
-        Log.d(ConsultActivity.APP_TAG, "[SQLite]Delete placeFragment :"+place);
+        Log.d(ConsultFragment.APP_TAG, "[SQLite]Delete placeFragment :"+place);
     }
 
     private void insertDefaultValues(SQLiteDatabase db) {
@@ -449,9 +449,9 @@ public class DataBase extends SQLiteOpenHelper {
             category.setDescription(cursor.getString(1));
             cursor.close();
 
-            Log.d(ConsultActivity.APP_TAG, "[SQLite]Get category :"+category.toString());
+            Log.d(ConsultFragment.APP_TAG, "[SQLite]Get category :"+category.toString());
         }else{
-            Log.w(ConsultActivity.APP_TAG, "[SQLite]Impossible to get category ");
+            Log.w(ConsultFragment.APP_TAG, "[SQLite]Impossible to get category ");
         }
         return category;
     }

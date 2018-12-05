@@ -12,7 +12,7 @@ android {
         versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-        multiDexEnabled  true
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -46,3 +46,5 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 }
 
+
+apply plugin: 'kotlin-android-extensions'

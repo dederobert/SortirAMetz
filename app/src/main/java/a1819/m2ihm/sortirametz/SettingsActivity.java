@@ -255,6 +255,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
     }
 
+
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class UnitFragment extends PreferenceFragment {
         @Override

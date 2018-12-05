@@ -1,16 +1,16 @@
 package a1819.m2ihm.sortirametz.listeners;
 
 import a1819.m2ihm.sortirametz.PlaceActivity;
-import a1819.m2ihm.sortirametz.ConsultActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
 
 public class AddButtonListener implements View.OnClickListener {
 
-    private ConsultActivity activity;
+    private Activity activity;
 
-    public AddButtonListener(ConsultActivity consultActivity) {
-        this.activity = consultActivity;
+    public AddButtonListener(Activity activity) {
+        this.activity = activity;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package a1819.m2ihm.sortirametz.map;
 
-import a1819.m2ihm.sortirametz.ConsultActivity;
-import a1819.m2ihm.sortirametz.MapsActivity;
+import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
@@ -9,6 +8,7 @@ import a1819.m2ihm.sortirametz.listeners.CameraListener;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import android.Manifest;
+import android.app.Activity;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static a1819.m2ihm.sortirametz.MapsActivity.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static a1819.m2ihm.sortirametz.MapsFragment.MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
 
 public class Locator extends LocationCallback implements OnMapReadyCallback {
 
@@ -63,11 +63,11 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     public MapFilter mapFilter;
-    private MapsActivity activity;
+    private Activity activity;
     private LocationRequest locationRequest;
     private boolean centerOnPosition = true;
 
-    public Locator(MapsActivity activity) {
+    public Locator(Activity activity) {
         this.activity =activity;
         this.mapFilter = new MapFilter(this.markers);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.activity);
@@ -167,7 +167,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
         mMap = googleMap;
 
         //On place tout les points sur la carte
-        List<Place> places = Objects.requireNonNull(AbstractDAOFactory.getFactory(this.activity, ConsultActivity.FACTORY_TYPE)).getPlaceDAO().findAll();
+        List<Place> places = Objects.requireNonNull(AbstractDAOFactory.getFactory(this.activity, ConsultFragment.FACTORY_TYPE)).getPlaceDAO().findAll();
         for (Place place : places) {
             LatLng coordPlace = new LatLng(place.getLatitude(), place.getLongitude());
             markers.add(new CustomMarker(
@@ -195,7 +195,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
         ));
 
         //On ajoute un listener du bouton pour centrer sur la position
-        CameraListener listener = new CameraListener(this.activity);
+        CameraListener listener = new CameraListener(this);
         mMap.setOnMyLocationButtonClickListener(listener);
         mMap.setOnCameraMoveListener(listener);
 
@@ -214,7 +214,7 @@ public class Locator extends LocationCallback implements OnMapReadyCallback {
 
     public void setCenterOnPosition(boolean centerOnPosition) {
         this.centerOnPosition = centerOnPosition;
-        Log.d(ConsultActivity.APP_TAG, "[LOCATOR] set center : "+this.centerOnPosition);
+        Log.d(ConsultFragment.APP_TAG, "[LOCATOR] set center : "+this.centerOnPosition);
     }
 
 }

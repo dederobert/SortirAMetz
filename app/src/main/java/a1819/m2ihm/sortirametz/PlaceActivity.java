@@ -58,7 +58,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         long placeId = getIntent().getLongExtra("placeId", -1);
         this.add = (placeId==-1);
 
-        AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultActivity.FACTORY_TYPE));
+        AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultFragment.FACTORY_TYPE));
         placeDAO = factory.getPlaceDAO();
         CategoryDAO categoryDAO = factory.getCategoryDAO();
 
@@ -144,7 +144,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
                 place.setDescription(edt_description.getText().toString());
                 place.setIcon(edt_icon.getText().toString());
                 placeDAO.create(place);
-                ConsultActivity.adapter.insertPlace(place);
+                ConsultFragment.adapter.insertPlace(place);
                 this.setResult(RESULT_OK);
             } else {
                 place.setName(edt_name.getText().toString());

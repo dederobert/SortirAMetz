@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.listeners;
 
-import a1819.m2ihm.sortirametz.ConsultActivity;
+import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.PlaceActivity;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.models.Place;
@@ -17,11 +17,11 @@ import android.view.View;
  * Swipe listener is use to handle the right swipe to remove
  */
 public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchHelperListener {
-    private final ConsultActivity activity;
+    private final ConsultFragment activity;
     private final ListAdapter adapter;
 
-    public SwipeListener(ConsultActivity consultActivity, ListAdapter adapter) {
-        this.activity = consultActivity;
+    public SwipeListener(ConsultFragment consultFragment, ListAdapter adapter) {
+        this.activity = consultFragment;
         this.adapter = adapter;
     }
 
@@ -42,7 +42,7 @@ public class SwipeListener implements ItemTouchHelperCallback.RecyclerItemTouchH
 
     private void editItem(RecyclerView.ViewHolder viewHolder) {
         Place place = ((Place)adapter.getPlace(viewHolder.getAdapterPosition()));
-        Intent intent = new Intent(this.activity, PlaceActivity.class);
+        Intent intent = new Intent(this.activity.getActivity(), PlaceActivity.class);
         intent.putExtra("placeId",place.getId());
         activity.startActivityForResult(intent, PlaceActivity.RESULT_EDIT);
     }
