@@ -40,6 +40,17 @@ public enum PreferencesHelper {
         public String getSymbol() {
             return this.symbol;
         }
+
+    }
+
+    public boolean useFingerprint(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("use_fingerprint", false);
+    }
+
+    public void setUseFingerprint(Context context, boolean useFingerprint) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        sharedPreferences.edit().putBoolean("use_fingerprint", useFingerprint).apply();
     }
 
     public Unit getUnit(Context context) {

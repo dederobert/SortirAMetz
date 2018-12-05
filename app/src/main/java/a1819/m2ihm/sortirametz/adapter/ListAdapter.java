@@ -43,11 +43,11 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         RecyclerView.ViewHolder viewHolder;
         if (viewType==LAYOUT_HEADER){
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.header_card, parent, false);
+                    .inflate(R.layout.card_header, parent, false);
             viewHolder = new CategoryListHolder(view);
         }else{
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.place_card, parent, false);
+                    .inflate(R.layout.card_place, parent, false);
             viewHolder = new PlaceListHolder(view);
         }
         return viewHolder;

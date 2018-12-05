@@ -1,16 +1,11 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.helpers.Logger;
-import android.Manifest;
-import android.app.KeyguardManager;
+import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.hardware.fingerprint.FingerprintManager;
-import android.os.Build;
+import android.content.RestrictionsManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.hardware.fingerprint.FingerprintManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -22,12 +17,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-import static android.view.KeyEvent.KEYCODE_ENTER;
-
-
 public class LoginActivity extends AppCompatActivity {
 
     private static final int REQUEST_SINGUP = 0;
+    private static final int REQUEST_FINGERPRINT = 1;
 
     @BindView(R.id.edt_login_username) EditText edt_username;
     @BindView(R.id.edt_login_password) EditText edt_password;
@@ -68,23 +61,24 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        edt_password.setImeActionLabel(this.getResources().getString(R.string.login), KEYCODE_ENTER);
-
-        //Verifie si on est sur Marshmallow
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_BIOMETRIC) != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "L'application n'a pas l'auto  ")
-            }
+        if (PreferencesHelper.INSTANCE.useFingerprint(this)) {
+            Intent intent = new Intent(this, FingerPrintActivity.class);
+            startActivityForResult(intent, REQUEST_FINGERPRINT);
         }
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_SINGUP){
+        if (requestCode == REQUEST_SINGUP) {
             if (resultCode == RESULT_OK) {
+                setResult(RESULT_OK);
+                this.finish();
+            }
+        } else if (requestCode == REQUEST_FINGERPRINT) {
+            if (resultCode == RESULT_OK) {
+                Logger.INSTANCE.loadUser(this);
                 setResult(RESULT_OK);
                 this.finish();
             }
