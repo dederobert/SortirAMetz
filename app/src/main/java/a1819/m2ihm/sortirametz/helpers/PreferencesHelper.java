@@ -2,7 +2,11 @@ package a1819.m2ihm.sortirametz.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public enum PreferencesHelper {
     INSTANCE;
@@ -64,4 +68,5 @@ public enum PreferencesHelper {
         String interval = sharedPreferences.getString("sync_frequency", "9000");
         return Long.parseLong(interval);
     }
+
 }

@@ -1,7 +1,9 @@
 package a1819.m2ihm.sortirametz;
 
 
+import a1819.m2ihm.sortirametz.helpers.FingerPrintHelper;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -34,6 +36,7 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
+
     /**
      * A preference value change listener that updates the preference's summary
      * to reflect its new value.
@@ -42,6 +45,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onPreferenceChange(Preference preference, Object value) {
             String stringValue = value.toString();
+
+
 
             if (preference instanceof ListPreference) {
                 // For list preferences, look up the correct display value in
@@ -60,7 +65,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 // using RingtoneManager.
                 if (TextUtils.isEmpty(stringValue)) {
                     // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
+                    //preference.setSummary(R.string.pref_ringtone_silent);
 
                 } else {
                     Ringtone ringtone = RingtoneManager.getRingtone(
@@ -121,6 +126,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         super.onCreate(savedInstanceState);
         setupActionBar();
     }
+
 
     /**
      * Set up the {@link android.app.ActionBar}, if the API is available.
@@ -206,7 +212,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_security);
             setHasOptionsMenu(true);
-
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                FingerPrintHelper.INSTANCE.initialised(getContext());
+                if (!FingerPrintHelper.INSTANCE.hasFingerPrint())
+                    findPreference("use_fingerprint").setEnabled(false);
+            }
         }
 
         @Override

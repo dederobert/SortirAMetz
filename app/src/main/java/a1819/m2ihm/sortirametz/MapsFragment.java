@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 import butterknife.BindView;
@@ -30,18 +31,36 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
     @BindView(R.id.spi_filter_category) Spinner spi_filter_category;
     public Category selectedCategory;
 
+    private View rootView;
+    private MapFragment mapFragment;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_maps, container, false);
-        ButterKnife.bind(this, view);
-        return view;
+        if (rootView!= null) {
+            ViewGroup parent = (ViewGroup) rootView.getParent();
+            if (parent!= null) parent.removeView(rootView);
+        }
+
+        try {
+            rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+            ButterKnife.bind(this, rootView);
+        }catch (InflateException ignored) {}
+        setupMap();
+        return rootView;
+    }
+
+    private void setupMap() {
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        if(mapFragment==null) {
+            mapFragment = (MapFragment) getActivity().getFragmentManager()
+                    .findFragmentById(R.id.map);
+        }
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
+    public void onStart() {
+        super.onStart();
         locator = new Locator(getActivity());
 
         CategoryDAO categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), ConsultFragment.FACTORY_TYPE)).getCategoryDAO();
@@ -63,9 +82,6 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spi_filter_category.setAdapter(adapter);
 
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        MapFragment mapFragment = (MapFragment) getActivity().getFragmentManager()
-                .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this.locator);
     }
 
@@ -94,43 +110,6 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
             }
         }
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //Permet d'ajouter un menu en haut à droite
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
-        switch (item.getItemId()){
-            case R.id.menu_consult:
-                goToConsult();
-                return true;
-            case R.id.menu_map:
-                return true;
-            case R.id.menu_setting:
-                intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.menu_disconnect:
-                Logger.INSTANCE.disconnect(this);
-                intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
-                this.finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void goToConsult() {
-        this.startActivity(new Intent(this, ConsultFragment.class));
-        this.finish();
-    }*/
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
