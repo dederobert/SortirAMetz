@@ -1,8 +1,8 @@
 package a1819.m2ihm.sortirametz.adapter;
 
-import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
+import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
@@ -86,7 +86,7 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 
     public void removePlaceFromDatabase(Place place) {
-        Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE))
+        Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ValueHelper.INSTANCE.getFactoryType()))
                 .getPlaceDAO().delete(place);
     }
 

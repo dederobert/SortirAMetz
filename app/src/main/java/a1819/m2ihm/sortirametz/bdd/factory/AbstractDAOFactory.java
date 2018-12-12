@@ -9,7 +9,7 @@ public abstract class AbstractDAOFactory {
 
     public enum FactoryType {
         SQLite,
-        Mariadb;
+        Mariadb
     }
 
     protected Context context;

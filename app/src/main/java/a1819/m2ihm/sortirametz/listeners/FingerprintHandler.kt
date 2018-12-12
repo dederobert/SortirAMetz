@@ -14,13 +14,13 @@ import android.widget.Toast
 
 @RequiresApi(Build.VERSION_CODES.M)
 class FingerprintHandler(var activity:Activity): FingerprintManager.AuthenticationCallback() {
-    var cancellationSignal: CancellationSignal? = null
-    var nbTry = 4
+    private var cancellationSignal: CancellationSignal? = null
+    private var nbTry = 4
 
     fun startAuth(fingerprintManager: FingerprintManager, cryptoObject: FingerprintManager.CryptoObject) {
         cancellationSignal = CancellationSignal()
         if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            return
         }
         fingerprintManager.authenticate(cryptoObject, cancellationSignal, 0, this, null)
     }

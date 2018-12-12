@@ -2,11 +2,7 @@ package a1819.m2ihm.sortirametz.helpers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 public enum PreferencesHelper {
     INSTANCE;
@@ -50,11 +46,6 @@ public enum PreferencesHelper {
     public boolean useFingerprint(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPreferences.getBoolean("use_fingerprint", false);
-    }
-
-    public void setUseFingerprint(Context context, boolean useFingerprint) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        sharedPreferences.edit().putBoolean("use_fingerprint", useFingerprint).apply();
     }
 
     public Unit getUnit(Context context) {

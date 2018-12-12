@@ -1,14 +1,13 @@
 package a1819.m2ihm.sortirametz.helpers;
 
-import a1819.m2ihm.sortirametz.ConsultFragment;
 import a1819.m2ihm.sortirametz.bdd.DataBase;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
+import a1819.m2ihm.sortirametz.models.Gender;
 import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -90,7 +89,7 @@ public enum Logger {
      * @return True if log successfully
      */
     public boolean login(@NonNull Context context, @NonNull String usernameEmail, @NonNull String password) {
-        AbstractDAOFactory factory = AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE);
+        AbstractDAOFactory factory = AbstractDAOFactory.getFactory(context, ValueHelper.INSTANCE.getFactoryType());
         assert factory != null;
         UserDAO dao = factory.getUserDAO();
 
@@ -99,7 +98,9 @@ public enum Logger {
         else
             user = dao.findByUsername(usernameEmail);
 
-        assert user != null;
+        if (user == null) {
+            return false;
+        }
         //TODO hash password
         if (user.getPassword().equals(password)) {
             SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_TAG, Context.MODE_PRIVATE);
@@ -129,8 +130,8 @@ public enum Logger {
      * @return True if register
      */
     @Deprecated
-    public boolean register(@NonNull DataBase dataBase, String username, String email, String password) {
-        user = new User(username, email, password);
+    public boolean register(@NonNull DataBase dataBase, String username, String email, String password, Gender gender) {
+        user = new User(username, email, password, gender);
         if (dataBase.getUserFormEmail(email)!=null || dataBase.getUserFromUsername(username)!=null)
             return false;
         dataBase.addUser(user);
@@ -146,9 +147,9 @@ public enum Logger {
      * @param password The password
      * @return True if register
      */
-    public boolean register(@NonNull Context context, String username, String email, String password) {
-        UserDAO dao = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE)).getUserDAO();
-        user = new User(username, email, password);
+    public boolean register(@NonNull Context context, String username, String email, String password, Gender gender) {
+        UserDAO dao = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ValueHelper.INSTANCE.getFactoryType())).getUserDAO();
+        user = new User(username, email, password, gender);
         if (dao.findByUsername(username)!=null || dao.findByEmail(email) != null)
             return false;
         dao.create(user);
@@ -170,13 +171,13 @@ public enum Logger {
     public void loadUser(@NonNull  Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_TAG, Context.MODE_PRIVATE);
         if (sharedPreferences.contains(LOGIN_FIELD)) {
-            user = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultFragment.FACTORY_TYPE))
+            user = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ValueHelper.INSTANCE.getFactoryType()))
                     .getUserDAO().findByUsername(sharedPreferences.getString(LOGIN_FIELD, ""));
         }
     }
     /**
      * Disconnect the user
-     * @param context
+     * @param context The context
      */
     public void disconnect(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(PREFERENCE_TAG, Context.MODE_PRIVATE);
@@ -186,8 +187,4 @@ public enum Logger {
         this.logged = false;
     }
 
-    @Nullable
-    public User getUser() {
-        return this.user;
-    }
 }

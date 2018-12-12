@@ -123,8 +123,8 @@
     <string name="title_activity_friend">FriendActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">SAM</string>
+    <string name="nav_header_subtitle">contact@sam.io</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="touch_sensor">Touch sensor</string>
@@ -138,4 +138,10 @@
     <string name="auth_succeeded">Authentication succeeded.</string>
     <string name="pref_header_security">Security</string>
     <string name="pref_title_use_fingerprint">Use fingerprint</string>
+    <string name="friends">Friends</string>
+    <string name="places">Places</string>
+    <string name="map">Map</string>
+    <string name="gender">Gender</string>
+    <string name="default_man_icon" translatable="false">"https://cdn4.iconfinder.com/data/icons/user-avatar-flat-icons/512/User_Avatar-31-512.png"</string>
+    <string name="default_woman_icon" translatable="false">"https://www.shareicon.net/download/2016/09/01/822726_user_512x512.png"</string>
 </resources>

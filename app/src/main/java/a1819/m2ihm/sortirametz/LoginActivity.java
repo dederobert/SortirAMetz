@@ -3,7 +3,6 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.helpers.Logger;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import android.content.Intent;
-import android.content.RestrictionsManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -59,12 +58,16 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-        ButterKnife.bind(this);
+        if (Logger.INSTANCE.isLogged(this)) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
         if (PreferencesHelper.INSTANCE.useFingerprint(this)) {
             Intent intent = new Intent(this, FingerPrintActivity.class);
             startActivityForResult(intent, REQUEST_FINGERPRINT);
         }
+        setContentView(R.layout.activity_login);
+        ButterKnife.bind(this);
     }
 
 
@@ -73,13 +76,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_SINGUP) {
             if (resultCode == RESULT_OK) {
-                setResult(RESULT_OK);
+                startActivity(new Intent(this, MainActivity.class));
                 this.finish();
             }
         } else if (requestCode == REQUEST_FINGERPRINT) {
             if (resultCode == RESULT_OK) {
                 Logger.INSTANCE.loadUser(this);
-                setResult(RESULT_OK);
+                startActivity(new Intent(this, MainActivity.class));
                 this.finish();
             }
         }
@@ -119,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLoginSuccess() {
         btn_login.setEnabled(true);
-        setResult(RESULT_OK);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }

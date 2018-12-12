@@ -137,4 +137,8 @@
     <string name="auth_succeeded">Authentification réussie</string>
     <string name="pref_header_security">Securité</string>
     <string name="pref_title_use_fingerprint">Utiliser les empreintes</string>
+    <string name="friends">Friends</string>
+    <string name="places">Places</string>
+    <string name="map">Map</string>
+    <string name="gender">Gender</string>
 </resources>

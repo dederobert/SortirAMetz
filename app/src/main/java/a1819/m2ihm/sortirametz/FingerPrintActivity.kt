@@ -28,24 +28,24 @@ import javax.crypto.SecretKey
 
 class FingerPrintActivity : AppCompatActivity() {
 
-    var fingerprintManager: FingerprintManager? = null
-    lateinit var keyguardManager: KeyguardManager
-    var keyStore: KeyStore? = null
-    var keyGenerator: KeyGenerator? = null
-    var cipher: Cipher? = null
-    var cryptoObject: FingerprintManager.CryptoObject? = null
+    private var fingerprintManager: FingerprintManager? = null
+    private lateinit var keyguardManager: KeyguardManager
+    private var keyStore: KeyStore? = null
+    private var keyGenerator: KeyGenerator? = null
+    private var cipher: Cipher? = null
+    private var cryptoObject: FingerprintManager.CryptoObject? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_finger_print)
 
-        FingerPrintHelper.INSTANCE.initialised(this);
+        FingerPrintHelper.INSTANCE.initialised(this)
 
         this.keyguardManager = getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
         this.fingerprintManager = FingerPrintHelper.INSTANCE.fingerprintManager
 
-        if (!keyguardManager.isKeyguardSecure()) {
+        if (!keyguardManager.isKeyguardSecure) {
             Toast.makeText(this, getString(R.string.no_lock_screen), Toast.LENGTH_LONG).show()
             return
         }
@@ -60,18 +60,18 @@ class FingerPrintActivity : AppCompatActivity() {
         generatedKey()
         if (cipherInit()) {
             cryptoObject = FingerprintManager.CryptoObject(cipher!!)
-            val helper: FingerprintHandler = FingerprintHandler(this)
+            val helper = FingerprintHandler(this)
             helper.startAuth(fingerprintManager!!, cryptoObject!!)
         }
     }
 
-    private val KEY_NAME: String = "example_key"
+    private val keyName: String = "example_key"
 
     @TargetApi(Build.VERSION_CODES.M)
     fun generatedKey() {
         this.keyStore = KeyStore.getInstance("AndroidKeyStore")
         try {
-            this.keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore");
+            this.keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, "AndroidKeyStore")
         }catch (e: NoSuchAlgorithmException) {
             throw RuntimeException("Failed to get KeyGenerator instance", e)
         }catch (e: NoSuchProviderException) {
@@ -79,7 +79,7 @@ class FingerPrintActivity : AppCompatActivity() {
         }
         try {
             keyStore?.load(null)
-            keyGenerator?.init(KeyGenParameterSpec.Builder(KEY_NAME,
+            keyGenerator?.init(KeyGenParameterSpec.Builder(keyName,
                     KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT)
                     .setBlockModes(KeyProperties.BLOCK_MODE_CBC)
                     .setUserAuthenticationRequired(true)
@@ -109,11 +109,11 @@ class FingerPrintActivity : AppCompatActivity() {
 
         return try {
             keyStore?.load(null)
-            val key: SecretKey = this.keyStore?.getKey(KEY_NAME, null) as SecretKey
+            val key: SecretKey = this.keyStore?.getKey(keyName, null) as SecretKey
             cipher?.init(Cipher.ENCRYPT_MODE, key)
-            true;
+            true
         }catch (e:KeyPermanentlyInvalidatedException) {
-            false;
+            false
         }catch (e:KeyStoreException) {
             throw RuntimeException("Failed to init cipher", e)
         }catch (e:CertificateException) {

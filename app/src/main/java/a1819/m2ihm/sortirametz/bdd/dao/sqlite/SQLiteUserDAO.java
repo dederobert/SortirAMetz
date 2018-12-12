@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
+public final class SQLiteUserDAO extends SQLiteDAO implements UserDAO {
 
     public SQLiteUserDAO(Context context) {
         super(context);
@@ -21,7 +21,6 @@ public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
 
     @Override
     public User find(long id) {
-        //TODO make this
         return this.dataBase.getUserFromId(id);
     }
 
@@ -43,8 +42,8 @@ public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
     }
 
     @Override
-    public User update(@NonNull User obj) {
-        return this.dataBase.updateUser(obj);
+    public void update(@NonNull User obj) {
+        this.dataBase.updateUser(obj);
     }
 
     @Override

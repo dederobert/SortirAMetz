@@ -3,16 +3,17 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
+import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.listeners.FilterButtonListener;
 import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.*;
 import android.widget.*;
 import butterknife.BindView;
@@ -46,6 +47,9 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
             rootView = inflater.inflate(R.layout.fragment_maps, container, false);
             ButterKnife.bind(this, rootView);
         }catch (InflateException ignored) {}
+        edt_filter_radius.setHint(edt_filter_radius.getHint()
+                +" ("+ PreferencesHelper.INSTANCE.getUnit(getContext()).getSymbol()+")");
+        edt_filter_radius.setImeActionLabel(this.getResources().getString(R.string.filter), KeyEvent.KEYCODE_ENTER);
         setupMap();
         return rootView;
     }
@@ -59,17 +63,23 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        //Change the symbol of radius according to preferences
+
+
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
-        locator = new Locator(getActivity());
+        if (locator==null)
+            locator = new Locator(getActivity());
+        if (filterListener==null)
+            filterListener = new FilterButtonListener(this, getActivity());
 
-        CategoryDAO categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), ConsultFragment.FACTORY_TYPE)).getCategoryDAO();
-
-        //Change the symbol of radius according to preferences
-        edt_filter_radius.setHint(edt_filter_radius.getHint()
-                +" ("+ PreferencesHelper.INSTANCE.getUnit(getContext()).getSymbol()+")");
-        edt_filter_radius.setImeActionLabel(this.getResources().getString(R.string.filter), KeyEvent.KEYCODE_ENTER);
-        filterListener = new FilterButtonListener(this, getActivity());
+        CategoryDAO categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), ValueHelper.INSTANCE.getFactoryType())).getCategoryDAO();
 
         edt_filter_radius.setOnEditorActionListener(filterListener);
 
@@ -95,20 +105,6 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
     public void onPause() {
         super.onPause();
         locator.stopLocationUpdates();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode){
-            case MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                //NOT GRANTED
-                if (grantResults.length == 1
-                        && permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    locator.getMap().setMyLocationEnabled(true);
-                else Toast.makeText(getContext(), R.string.needed_loaction, Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     @Override

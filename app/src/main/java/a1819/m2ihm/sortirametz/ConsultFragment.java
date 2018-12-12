@@ -3,6 +3,7 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.adapter.ListAdapter;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
+import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.listeners.AddButtonListener;
 import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
 import a1819.m2ihm.sortirametz.listeners.RefreshListener;
@@ -31,13 +32,12 @@ import static android.app.Activity.RESULT_CANCELED;
 
 public class ConsultFragment extends Fragment {
 
-    public static final String APP_TAG = "VisiteAMetz";
-    public static final AbstractDAOFactory.FactoryType FACTORY_TYPE = AbstractDAOFactory.FactoryType.SQLite;
+    //TODO SUPPRIMER LA VARIABLE STATIC
     static ListAdapter adapter;
 
-    public @BindView(R.id.linearLayout) FrameLayout mainLayout;
-    public @BindView(R.id.swiperefresh) SwipeRefreshLayout layout;
-    public @BindView(R.id.list) RecyclerView list;
+    public @BindView(R.id.lyt_consult) FrameLayout mainLayout;
+    public @BindView(R.id.swp_list) SwipeRefreshLayout layout;
+    public @BindView(R.id.rcv_list) RecyclerView list;
     public @BindView(R.id.addButton) ImageButton addButton;
 
     @Nullable
@@ -52,7 +52,8 @@ public class ConsultFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        PlaceDAO placeDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), FACTORY_TYPE)).getPlaceDAO();
+        PlaceDAO placeDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), ValueHelper.INSTANCE.getFactoryType()))
+                .getPlaceDAO();
 
         //Set the layout for swipe-to-refresh
         layout.setOnRefreshListener(new RefreshListener(this));
@@ -60,7 +61,7 @@ public class ConsultFragment extends Fragment {
         //Set the adapter which set items and item's holder
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setItemAnimator(new DefaultItemAnimator());
-        list.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        list.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
 
         adapter = new ListAdapter(this.getContext(), placeDAO.findAllGroupByCategory());
         list.setAdapter(adapter);
@@ -78,36 +79,4 @@ public class ConsultFragment extends Fragment {
         if (requestCode==PlaceActivity.RESULT_EDIT || resultCode ==RESULT_CANCELED)
             Objects.requireNonNull(list.getAdapter()).notifyDataSetChanged();
     }
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //Permet d'ajouter un menu en haut à droite
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //gestion des cliques dans le menu
-        switch (item.getItemId()){
-            case R.id.menu_consult:
-                return true;
-            case R.id.menu_map:
-                goToMap();
-                return true;
-            case R.id.menu_setting:
-                Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void goToMap() {
-        Intent intent = new Intent(this, MapsFragment.class);
-        this.startActivity(intent);
-        this.finish();
-    }*/
-
 }

@@ -19,7 +19,7 @@ enum class FingerPrintHelper {
         if (fingerprintManager!=null)
             return fingerprintManager!!.isHardwareDetected()
         else
-            return false;
+            return false
     }
 
     fun initialised(context: Context) {

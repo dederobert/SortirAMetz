@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class MariaDBUserDAO extends MariaDBDAO<User> implements UserDAO {
+public final class MariaDBUserDAO extends MariaDBDAO implements UserDAO {
 
     public MariaDBUserDAO(Context context) {
         super(context);
@@ -31,8 +31,7 @@ public final class MariaDBUserDAO extends MariaDBDAO<User> implements UserDAO {
     }
 
     @Override
-    public User update(@NonNull User obj) {
-        return null;
+    public void update(@NonNull User obj) {
     }
 
     @Override

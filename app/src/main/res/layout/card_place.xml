@@ -62,24 +62,22 @@
                 android:layout_width="@dimen/place_icon_size"
                 android:id="@+id/placeIcon"
                 android:layout_height="@dimen/place_icon_size"
-                android:layout_marginRight="@dimen/activity_padding_horizontal"
+                android:layout_marginEnd="@dimen/activity_padding_horizontal"
                 android:scaleType="centerCrop"/>
 
         <TextView
-                android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/placeIcon"
+                android:layout_toEndOf="@id/placeIcon"
                 android:id="@+id/placeName"/>
 
         <TextView
-                android:text="TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/placeIcon"
                 android:layout_below="@id/placeName"
                 android:layout_marginTop="5dp"
-                android:layout_toRightOf="@id/placeIcon"
                 android:id="@+id/placeAddress"
-                android:layout_weight="1"/>
+                />
     </RelativeLayout>
 </android.support.v7.widget.CardView>
