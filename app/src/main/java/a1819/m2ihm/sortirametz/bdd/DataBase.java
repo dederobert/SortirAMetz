@@ -2,6 +2,7 @@ package a1819.m2ihm.sortirametz.bdd;
 
 import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.models.*;
+import a1819.m2ihm.sortirametz.utils.Bdd;
 import a1819.m2ihm.sortirametz.utils.Tuple;
 import android.content.ContentValues;
 import android.content.Context;
@@ -21,27 +22,27 @@ public class DataBase extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "VisiteAMetzDB";
 
-    private static final String TABLE_CATEGORIES = "categories";
-    private static final String TABLE_PLACES = "places";
-    private static final String TABLE_USERS = "users";
-    private static final String TABLE_FRIENDS = "friends";
+    public static final String TABLE_CATEGORIES = "categories";
+    public static final String TABLE_PLACES = "places";
+    public static final String TABLE_USERS = "users";
+    public static final String TABLE_FRIENDS = "friends";
 
     //TABLE CATEGORY
-    private static final Tuple<String, Integer> KEY_CATEGORY_ID = new Tuple<>("id",0);
-    private static final Tuple<String, Integer> KEY_CATEGORY_DESCRIPTION = new Tuple<>("description",1);
+    public static final Tuple<String, Integer> KEY_CATEGORY_ID = new Tuple<>("id",0);
+    public static final Tuple<String, Integer> KEY_CATEGORY_DESCRIPTION = new Tuple<>("description",1);
 
     private static final String[] CATEGORY_COLUMNS = {KEY_CATEGORY_ID.getV1(), KEY_CATEGORY_DESCRIPTION.getV1()};
 
 
     //TABLE PLACES
-    private static final Tuple<String, Integer> KEY_PLACE_ID = new Tuple<>("id",0);
-    private static final Tuple<String, Integer> KEY_PLACE_NAME = new Tuple<>("name",1);
-    private static final Tuple<String, Integer> KEY_PLACE_LATITUDE = new Tuple<>("latitude",2);
-    private static final Tuple<String, Integer> KEY_PLACE_LONGITUDE = new Tuple<>("longitude",3);
-    private static final Tuple<String, Integer> KEY_PLACE_ADDRESS = new Tuple<>("address",4);
-    private static final Tuple<String, Integer> KEY_PLACE_CATEGORY_ID = new Tuple<>("category_id",5);
-    private static final Tuple<String, Integer> KEY_PLACE_DESCRIPTION = new Tuple<>("description",6);
-    private static final Tuple<String, Integer> KEY_PLACE_ICON = new Tuple<>("icon",7);
+    public static final Tuple<String, Integer> KEY_PLACE_ID = new Tuple<>("id",0);
+    public static final Tuple<String, Integer> KEY_PLACE_NAME = new Tuple<>("name",1);
+    public static final Tuple<String, Integer> KEY_PLACE_LATITUDE = new Tuple<>("latitude",2);
+    public static final Tuple<String, Integer> KEY_PLACE_LONGITUDE = new Tuple<>("longitude",3);
+    public static final Tuple<String, Integer> KEY_PLACE_ADDRESS = new Tuple<>("address",4);
+    public static final Tuple<String, Integer> KEY_PLACE_CATEGORY_ID = new Tuple<>("category_id",5);
+    public static final Tuple<String, Integer> KEY_PLACE_DESCRIPTION = new Tuple<>("description",6);
+    public static final Tuple<String, Integer> KEY_PLACE_ICON = new Tuple<>("icon",7);
 
 
     private static final String[] PLACE_COLUMNS = {KEY_PLACE_ID.getV1(), KEY_PLACE_NAME.getV1(),
@@ -49,12 +50,12 @@ public class DataBase extends SQLiteOpenHelper {
             KEY_PLACE_CATEGORY_ID.getV1(), KEY_PLACE_DESCRIPTION.getV1(), KEY_PLACE_ICON.getV1()};
 
     //TABLE USERS
-    private static final Tuple<String, Integer> KEY_USER_ID = new Tuple<>("id", 0);
-    private static final Tuple<String, Integer> KEY_USER_USERNAME = new Tuple<>("username",1);
-    private static final Tuple<String, Integer> KEY_USER_EMAIL = new Tuple<>("email", 2);
-    private static final Tuple<String, Integer> KEY_USER_PASSWORD = new Tuple<>("password", 3);
-    private static final Tuple<String, Integer> KEY_USER_GENDER = new Tuple<>("gender", 4);
-    private static final Tuple<String, Integer> KEY_USER_AVATAR = new Tuple<>("avatar", 5);
+    public static final Tuple<String, Integer> KEY_USER_ID = new Tuple<>("id", 0);
+    public static final Tuple<String, Integer> KEY_USER_USERNAME = new Tuple<>("username",1);
+    public static final Tuple<String, Integer> KEY_USER_EMAIL = new Tuple<>("email", 2);
+    public static final Tuple<String, Integer> KEY_USER_PASSWORD = new Tuple<>("password", 3);
+    public static final Tuple<String, Integer> KEY_USER_GENDER = new Tuple<>("gender", 4);
+    public static final Tuple<String, Integer> KEY_USER_AVATAR = new Tuple<>("avatar", 5);
 
     private static final String[] USER_COLUMNS = {KEY_USER_ID.getV1(), KEY_USER_USERNAME.getV1(),
             KEY_USER_EMAIL.getV1(), KEY_USER_PASSWORD.getV1(), KEY_USER_GENDER.getV1(), KEY_USER_AVATAR.getV1()};
@@ -84,11 +85,8 @@ public class DataBase extends SQLiteOpenHelper {
      */
     private void addCategory(@NonNull SQLiteDatabase db, @NonNull Category category) {
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Add category :"+category.toString());
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_CATEGORY_DESCRIPTION.getV1(), category.getDescription());
-
-        category.setId(db.insert(TABLE_CATEGORIES, null, values));
+        category.setId(-1);
+        category.setId(db.insert(TABLE_CATEGORIES, null, Bdd.INSTANCE.categoryToContentValues(category)));
     }
 
     /**
@@ -109,18 +107,10 @@ public class DataBase extends SQLiteOpenHelper {
      * @param place Lieu à utilisé
      */
     private void addPlace(@NonNull SQLiteDatabase db, @NonNull Place place) {
-        Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Add placeFragment :"+place.toString());
-        ContentValues values = new ContentValues();
-        values.put(KEY_PLACE_NAME.getV1(), place.getName());
-        values.put(KEY_PLACE_LATITUDE.getV1(), place.getLatitude());
-        values.put(KEY_PLACE_LONGITUDE.getV1(), place.getLongitude());
-        values.put(KEY_PLACE_ADDRESS.getV1(), place.getAddress());
-        values.put(KEY_PLACE_CATEGORY_ID.getV1(), place.getCategory().getId());
-        values.put(KEY_PLACE_DESCRIPTION.getV1(), place.getDescription());
-        values.put(KEY_PLACE_ICON.getV1(), place.getIcon());
-
-        long id = db.insert(TABLE_PLACES, null, values);
+        place.setId(-1);
+        long id = db.insert(TABLE_PLACES, null, Bdd.INSTANCE.placeToContentValues(place));
         place.setId(id);
+        Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Add place :"+place.toString());
     }
 
     /**
@@ -141,14 +131,8 @@ public class DataBase extends SQLiteOpenHelper {
      * @param user Utilisateur à ajouter
      */
     private void addUser(@NonNull SQLiteDatabase db, @NonNull User user) {
-        ContentValues values = new ContentValues();
-        values.put(KEY_USER_USERNAME.getV1(), user.getUsername());
-        values.put(KEY_USER_EMAIL.getV1(), user.getEmail());
-        values.put(KEY_USER_PASSWORD.getV1(), user.getPassword());
-        values.put(KEY_USER_GENDER.getV1(), user.getGender().getCode());
-        values.put(KEY_USER_AVATAR.getV1(), user.getAvatar());
-
-        long id = db.insert(TABLE_USERS, null, values);
+        user.setId(-1);
+        long id = db.insert(TABLE_USERS, null, Bdd.INSTANCE.userToContentValues(user));
         user.setId(id);
     }
 
@@ -202,7 +186,7 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
                 );
-        Category category = cursorToCategory(cursor);
+        Category category = Bdd.INSTANCE.cursorToCategory(cursor);
         db.close();
         return category;
     }
@@ -225,7 +209,7 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
         );
-        return cursorToCategory(cursor);
+        return Bdd.INSTANCE.cursorToCategory(cursor);
     }
 
     /**
@@ -290,7 +274,7 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
         );
-        User user = cursorToUser(cursor);
+        User user = Bdd.INSTANCE.cursorToUser(cursor);
         db.close();
         return user;
     }
@@ -314,7 +298,7 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
         );
-        User user = cursorToUser(cursor);
+        User user = Bdd.INSTANCE.cursorToUser(cursor);
         db.close();
         return user;
     }
@@ -337,7 +321,7 @@ public class DataBase extends SQLiteOpenHelper {
                 null,
                 null
         );
-        User user = cursorToUser(cursor);
+        User user = Bdd.INSTANCE.cursorToUser(cursor);
         db.close();
         return user;
     }
@@ -387,16 +371,7 @@ public class DataBase extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
-        Category category;
-        if (cursor.moveToFirst()){
-            do {
-                category = new Category();
-                category.setId(Integer.parseInt(cursor.getString(KEY_CATEGORY_ID.getV2())));
-                category.setDescription(cursor.getString(KEY_CATEGORY_DESCRIPTION.getV2()));
-                categories.add(category);
-            }while (cursor.moveToNext());
-        }
-
+        categories = Bdd.INSTANCE.cursorToCategories(cursor);
         cursor.close();
         db.close();
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Get all categories "+categories.toString());
@@ -551,26 +526,13 @@ public class DataBase extends SQLiteOpenHelper {
      */
     public void updatePlace(@NonNull Place place) {
         SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_PLACE_NAME.getV1(), place.getName());
-        values.put(KEY_PLACE_LATITUDE.getV1(), place.getLatitude());
-        values.put(KEY_PLACE_LONGITUDE.getV1(), place.getLongitude());
-        values.put(KEY_PLACE_ADDRESS.getV1(), place.getAddress());
-        values.put(KEY_PLACE_CATEGORY_ID.getV1(), place.getCategory().getId());
-        values.put(KEY_PLACE_DESCRIPTION.getV1(), place.getDescription());
-        values.put(KEY_PLACE_ICON.getV1(), place.getIcon());
-
-
         db.update(
                 TABLE_PLACES,
-                values,
+                Bdd.INSTANCE.placeToContentValues(place),
                 KEY_PLACE_ID.getV1()+" = ?",
                 new String[] {String.valueOf(place.getId())}
         );
-
         db.close();
-
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Update place :"+place);
     }
 
@@ -580,16 +542,9 @@ public class DataBase extends SQLiteOpenHelper {
      */
     public void updateUser(@NonNull User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(KEY_USER_USERNAME.getV1(), user.getUsername());
-        values.put(KEY_USER_EMAIL.getV1(), user.getEmail());
-        values.put(KEY_USER_PASSWORD.getV1(), user.getPassword());
-        values.put(KEY_USER_GENDER.getV1(), user.getGender().getCode());
-        values.put(KEY_USER_AVATAR.getV1(), user.getAvatar());
-        
         db.update(
                 TABLE_USERS,
-                values,
+                Bdd.INSTANCE.userToContentValues(user),
                 KEY_USER_ID.getV1()+" = ?",
                 new String[] {String.valueOf(user.getId())}
         );
@@ -613,7 +568,6 @@ public class DataBase extends SQLiteOpenHelper {
                 new String[] {String.valueOf(category.getId())}
         );
         db.close();
-
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Delete category :"+category);
     }
 
@@ -629,7 +583,6 @@ public class DataBase extends SQLiteOpenHelper {
                 new String[] {String.valueOf(place.getId())}
         );
         db.close();
-
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Delete placeFragment :"+place);
     }
 
@@ -719,51 +672,6 @@ public class DataBase extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_FRIENDS);
         this.onCreate(db);
-    }
-
-
-    /**
-     * Obtient une catégorie à partir d'un objet cursor
-     * @param cursor Curseur sur le résultat d'un SELECT SQL
-     * @return La catégorie correspondant, null si le curseur n'est pas associé à une catégorie
-     */
-    private @Nullable Category cursorToCategory(@Nullable Cursor cursor) {
-        Category category = null;
-
-        if (cursor != null && cursor.moveToFirst()){
-            category = new Category();
-
-            category.setId(Integer.parseInt(cursor.getString(0)));
-            category.setDescription(cursor.getString(1));
-            cursor.close();
-
-            Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Get category :"+category.toString());
-        }else{
-            Log.w(ValueHelper.INSTANCE.getTag(), "[SQLite]Impossible to get category ");
-        }
-        return category;
-    }
-
-    /**
-     * Obtient un utilisateur à partir d'un objet cursor
-     * @param cursor Curseur sur le résultat d'un SELECT SQL
-     * @return L'utilisateur correspondant, null si le curseur n'est pas associé à un utilisateur
-     */
-    private @Nullable User cursorToUser(@Nullable Cursor cursor) {
-        User user = null;
-        if (cursor != null && cursor.moveToFirst()){
-            user = new User();
-            user.setId(cursor.getLong(KEY_USER_ID.getV2()));
-            user.setUsername(cursor.getString(KEY_USER_USERNAME.getV2()));
-            user.setEmail(cursor.getString(KEY_USER_EMAIL.getV2()));
-            user.setPassword(cursor.getString(KEY_USER_PASSWORD.getV2()));
-            user.setGender(Gender.Companion.fromCode(cursor.getString(KEY_USER_GENDER.getV2())));
-            user.setAvatar(cursor.getString(KEY_USER_AVATAR.getV2()));
-
-            cursor.close();
-
-        }
-        return user;
     }
 
 

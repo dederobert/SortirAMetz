@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
+
     <uses-feature
             android:name="android.hardware.fingerprint"
             android:required="true"/>
@@ -25,6 +26,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
+        <provider
+                android:authorities=".provider"
+                android:name=".bdd.ContentProvider" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
