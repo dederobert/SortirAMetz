@@ -52,8 +52,8 @@ public class Category implements Recyclerable {
     }
 
     @Override
-    public boolean isHeader() {
-        return true;
+    public Type getType() {
+        return Type.CATEGORY;
     }
 
     public boolean isMockCategory() {

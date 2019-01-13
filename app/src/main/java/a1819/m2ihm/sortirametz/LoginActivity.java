@@ -2,6 +2,7 @@ package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.helpers.Logger;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
+import a1819.m2ihm.sortirametz.utils.UniqueId;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,8 +19,8 @@ import butterknife.OnEditorAction;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int REQUEST_SINGUP = 0;
-    private static final int REQUEST_FINGERPRINT = 1;
+    private static final int REQUEST_SINGUP = UniqueId.INSTANCE.nextValue();
+    private static final int REQUEST_FINGERPRINT = UniqueId.INSTANCE.nextValue();
 
     @BindView(R.id.edt_login_username) EditText edt_username;
     @BindView(R.id.edt_login_password) EditText edt_password;
@@ -59,8 +60,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Logger.INSTANCE.isLogged(this)) {
+            Logger.INSTANCE.loadUser(this);
             startActivity(new Intent(this, MainActivity.class));
             finish();
+            return;
         }
         if (PreferencesHelper.INSTANCE.useFingerprint(this)) {
             Intent intent = new Intent(this, FingerPrintActivity.class);

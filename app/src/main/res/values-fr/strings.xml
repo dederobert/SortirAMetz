@@ -138,7 +138,9 @@
     <string name="pref_header_security">Securité</string>
     <string name="pref_title_use_fingerprint">Utiliser les empreintes</string>
     <string name="friends">Friends</string>
-    <string name="places">Places</string>
+    <string name="elements">Places</string>
     <string name="map">Map</string>
     <string name="gender">Gender</string>
+    <string name="search_somebody">Trouver quelqu\'un</string>
+    <string name="add_as_friend">Ajouter</string>
 </resources>

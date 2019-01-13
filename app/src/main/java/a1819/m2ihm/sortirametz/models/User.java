@@ -71,8 +71,8 @@ public class User implements Recyclerable {
     }
 
     @Override
-    public boolean isHeader() {
-        return false;
+    public Type getType() {
+        return Type.USER;
     }
 
     public String getAvatar() {

@@ -1,14 +1,18 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.adapter.ListAdapter;
+import a1819.m2ihm.sortirametz.adapter.ListCategoryAdapter;
+import a1819.m2ihm.sortirametz.adapter.ListPlaceAdapter;
+import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
 import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.listeners.AddButtonListener;
 import a1819.m2ihm.sortirametz.listeners.ItemTouchHelperCallback;
-import a1819.m2ihm.sortirametz.listeners.RefreshListener;
-import a1819.m2ihm.sortirametz.listeners.SwipeListener;
-import android.content.Intent;
+import a1819.m2ihm.sortirametz.listeners.RefreshPlaceListener;
+import a1819.m2ihm.sortirametz.listeners.swipe.SwipeCategoryListener;
+import a1819.m2ihm.sortirametz.listeners.swipe.SwipeListener;
+import a1819.m2ihm.sortirametz.listeners.swipe.SwipePlaceListener;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,26 +28,34 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static android.app.Activity.RESULT_CANCELED;
 
+public class ListFragment extends Fragment {
 
-public class ConsultFragment extends Fragment {
+    public enum DisplayMode {
+        PLACE,
+        CATEGORY
+    }
 
-    //TODO SUPPRIMER LA VARIABLE STATIC
-    static ListAdapter adapter;
+    private PlaceDAO placeDAO;
+    private CategoryDAO categoryDAO;
+
+    private ListAdapter adapter;
 
     public @BindView(R.id.lyt_consult) FrameLayout mainLayout;
     public @BindView(R.id.swp_list) SwipeRefreshLayout layout;
     public @BindView(R.id.rcv_list) RecyclerView list;
     public @BindView(R.id.addButton) ImageButton addButton;
+    @NotNull
+    public DisplayMode displayMode = DisplayMode.PLACE;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_consult, container, false);
+        View view = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -52,31 +64,36 @@ public class ConsultFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        PlaceDAO placeDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(getContext(), ValueHelper.INSTANCE.getFactoryType()))
+        //Set the layout for swipe-to-refresh
+        layout.setOnRefreshListener(new RefreshPlaceListener(this));
+
+        placeDAO = AbstractDAOFactory.getFactory(getContext(), ValueHelper.INSTANCE.getFactoryType())
                 .getPlaceDAO();
 
-        //Set the layout for swipe-to-refresh
-        layout.setOnRefreshListener(new RefreshListener(this));
+        categoryDAO = AbstractDAOFactory.getFactory(getContext(), ValueHelper.INSTANCE.getFactoryType()).getCategoryDAO();
 
         //Set the adapter which set items and item's holder
         list.setLayoutManager(new LinearLayoutManager(getContext()));
         list.setItemAnimator(new DefaultItemAnimator());
         list.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
 
-        adapter = new ListAdapter(this.getContext(), placeDAO.findAllGroupByCategory());
+        updateAdapter();
+        addButton.setOnClickListener(new AddButtonListener(this));
+    }
+
+    public void updateAdapter() {
+        if (displayMode.equals(DisplayMode.PLACE))
+            adapter = new ListPlaceAdapter(this.getContext(), placeDAO.findAllGroupByCategory());
+        else
+            adapter = new ListCategoryAdapter(this.getContext(), categoryDAO.findAll());
         list.setAdapter(adapter);
 
         //Set the callback for swipe on left and right
-        new ItemTouchHelper(new ItemTouchHelperCallback(
-                new SwipeListener(this, adapter), ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT))
-                .attachToRecyclerView(list);
-
-        addButton.setOnClickListener(new AddButtonListener(this.getActivity()));
+        SwipeListener swipeListener = displayMode.equals(DisplayMode.PLACE)?new SwipePlaceListener(this, adapter):new SwipeCategoryListener(this, adapter);
+        new ItemTouchHelper(new ItemTouchHelperCallback( swipeListener, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)).attachToRecyclerView(list);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode==PlaceActivity.RESULT_EDIT || resultCode ==RESULT_CANCELED)
-            Objects.requireNonNull(list.getAdapter()).notifyDataSetChanged();
+    public ListAdapter getAdapter() {
+        return adapter;
     }
 }

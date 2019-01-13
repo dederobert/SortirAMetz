@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface DAO<T> {
 
-    List<T> findAll();
+    @NonNull List<T> findAll();
     @Nullable T find(long id);
     T create(@NonNull T obj);
     void update(@NonNull T obj);

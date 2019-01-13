@@ -7,6 +7,7 @@ import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.listeners.FilterButtonListener;
 import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
+import a1819.m2ihm.sortirametz.utils.UniqueId;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -25,7 +26,7 @@ import java.util.Objects;
 
 public class MapsFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
-    public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    public static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = UniqueId.INSTANCE.nextValue();
     public Locator locator;
     private FilterButtonListener filterListener;
     @BindView(R.id.edt_filter_radius) EditText edt_filter_radius;
@@ -47,7 +48,7 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
             rootView = inflater.inflate(R.layout.fragment_maps, container, false);
             ButterKnife.bind(this, rootView);
         }catch (InflateException ignored) {}
-        edt_filter_radius.setHint(edt_filter_radius.getHint()
+        edt_filter_radius.setHint(getResources().getString(R.string.radius)
                 +" ("+ PreferencesHelper.INSTANCE.getUnit(getContext()).getSymbol()+")");
         edt_filter_radius.setImeActionLabel(this.getResources().getString(R.string.filter), KeyEvent.KEYCODE_ENTER);
         setupMap();
@@ -66,9 +67,6 @@ public class MapsFragment extends Fragment implements AdapterView.OnItemSelected
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //Change the symbol of radius according to preferences
-
-
-
     }
 
     @Override

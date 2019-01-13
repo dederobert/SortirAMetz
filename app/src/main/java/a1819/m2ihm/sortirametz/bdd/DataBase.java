@@ -8,6 +8,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.LinkedList;
@@ -15,13 +17,14 @@ import java.util.List;
 
 public class DataBase extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 9;
 
     private static final String DATABASE_NAME = "VisiteAMetzDB";
 
     private static final String TABLE_CATEGORIES = "categories";
     private static final String TABLE_PLACES = "places";
     private static final String TABLE_USERS = "users";
+    private static final String TABLE_FRIENDS = "friends";
 
     //TABLE CATEGORY
     private static final Tuple<String, Integer> KEY_CATEGORY_ID = new Tuple<>("id",0);
@@ -58,10 +61,10 @@ public class DataBase extends SQLiteOpenHelper {
 
 
     //TABLE FRIENDS
-    //private static final Tuple<String, Integer> KEY_FRIEND_USER1_ID = new Tuple("user1_id", 0);
-    //private static final Tuple<String, Integer> KEY_FRIEND_USER2_ID = new Tuple("user2_id", 1);
+    private static final Tuple<String, Integer> KEY_FRIEND_USER1_ID = new Tuple<>("user1_id", 0);
+    private static final Tuple<String, Integer> KEY_FRIEND_USER2_ID = new Tuple<>("user2_id", 1);
 
-    //private static final String[] FRIENDS_COLUMNS = {KEY_FRIEND_USER1_ID.getV1(), KEY_FRIEND_USER2_ID.getV1()};
+    private static final String[] FRIENDS_COLUMNS = {KEY_FRIEND_USER1_ID.getV1(), KEY_FRIEND_USER2_ID.getV1()};
 
 
 
@@ -69,7 +72,17 @@ public class DataBase extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    private void addCategory(SQLiteDatabase db, Category category) {
+
+    /*
+     * FONCTION D'AJOUT A LA BASE DE DONNEE
+     */
+
+    /**
+     * Ajoute une categorie à la base de donnée passé en paramètre
+     * @param db Base de donnée à utiliser
+     * @param category Categorie à utiliser
+     */
+    private void addCategory(@NonNull SQLiteDatabase db, @NonNull Category category) {
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Add category :"+category.toString());
 
         ContentValues values = new ContentValues();
@@ -78,14 +91,24 @@ public class DataBase extends SQLiteOpenHelper {
         db.insert(TABLE_CATEGORIES, null, values);
     }
 
-    public Category addCategory(Category category) {
+    /**
+     * Ajoute une category à la base de donnée
+     * @param category Categorie à ajouter
+     * @return La categorie passé en paramètre
+     */
+    public @NonNull Category addCategory(@NonNull Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         addCategory(db, category);
         db.close();
         return category;
     }
 
-    private void addPlace(SQLiteDatabase db, Place place) {
+    /**
+     * Ajoute un lieu à la base de donnée passé en paramètre
+     * @param db Base de donnée à utiliser
+     * @param place Lieu à utilisé
+     */
+    private void addPlace(@NonNull SQLiteDatabase db, @NonNull Place place) {
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Add placeFragment :"+place.toString());
         ContentValues values = new ContentValues();
         values.put(KEY_PLACE_NAME.getV1(), place.getName());
@@ -100,7 +123,24 @@ public class DataBase extends SQLiteOpenHelper {
         place.setId(id);
     }
 
-    private void addUser(SQLiteDatabase db, User user) {
+    /**
+     * Ajoute un lieu à la base de donnée
+     * @param place Lieu à ajouter
+     * @return Le lieu passé en paramètre
+     */
+    public @NonNull Place addPlace(@NonNull Place place) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addPlace(db, place);
+        db.close();
+        return place;
+    }
+
+    /**
+     * Ajoute un utilisateur à la base de donnée passé en paramètre
+     * @param db Base de donnée à utiliser
+     * @param user Utilisateur à ajouter
+     */
+    private void addUser(@NonNull SQLiteDatabase db, @NonNull User user) {
         ContentValues values = new ContentValues();
         values.put(KEY_USER_USERNAME.getV1(), user.getUsername());
         values.put(KEY_USER_EMAIL.getV1(), user.getEmail());
@@ -112,20 +152,43 @@ public class DataBase extends SQLiteOpenHelper {
         user.setId(id);
     }
 
-    public User addUser(User user) {
+    /**
+     * Ajoute un utilisateur à la base de donnée
+     * @param user Utilisateur à ajouter
+     * @return L'utilisateur passé en paramètre
+     */
+    public @NonNull User addUser(@NonNull User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         addUser(db, user);
         db.close();
         return user;
     }
 
-    public Place addPlace(Place place) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        addPlace(db, place);
-        db.close();
-        return place;
+    public void addFriend(@NonNull SQLiteDatabase db, @NonNull User user1, @NonNull User user2) {
+        if (user1.equals(user2)) return;
+        if (containsFriend(db, user1, user2)) return;
+        ContentValues values = new ContentValues();
+        values.put(KEY_FRIEND_USER1_ID.getV1(), user1.getId());
+        values.put(KEY_FRIEND_USER2_ID.getV1(), user2.getId());
+
+        db.insert(TABLE_FRIENDS, null, values);
     }
 
+    public void addFriend(@NonNull User user1, @NonNull User user2) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        addFriend(db, user1, user2);
+        db.close();
+    }
+
+    /*
+     * GETTER DE LA BASE DE DONNEE
+     */
+
+    /**
+     * Obtient une categorie de la base de donnée en fonction de don id
+     * @param id Id de la categorie
+     * @return La catégorie trouvée dans le base de donnée, null si aucune trouvé
+     */
     public Category getCategory(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -144,7 +207,14 @@ public class DataBase extends SQLiteOpenHelper {
         return category;
     }
 
-    private Category getCategory(SQLiteDatabase db, String description) {
+    /**
+     * Obtient une catégorie de la base de donnée passé en paramètre en fonction de sa description
+     * @param db Base de donnée à utiliser
+     * @param description Description de la catégorie
+     * @return La catégorie trouvé dans la base de donnée, null si aucune trouvé
+     */
+    private @Nullable Category getCategory(@NonNull SQLiteDatabase db, @NonNull String description) {
+        if (description.equals("")) return null;
         Cursor cursor = db.query(
                 TABLE_CATEGORIES,
                 CATEGORY_COLUMNS,
@@ -158,7 +228,12 @@ public class DataBase extends SQLiteOpenHelper {
         return cursorToCategory(cursor);
     }
 
-    public Place getPlace(long id) {
+    /**
+     * Obtient un lieu de la base de donnée en fonction de son id
+     * @param id Id du lieu à trouver
+     * @return Le lieu trouvé dans la base de donnée, null si aucun trouvé
+     */
+    public @Nullable Place getPlace(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -196,7 +271,13 @@ public class DataBase extends SQLiteOpenHelper {
         return place;
     }
 
-    public User getUserFormEmail(String email) {
+    /**
+     * Obtient un utilisateur de la base de donnée en fonction de son email
+     * @param email Email de l'utilisateur à chercher
+     * @return L'utilisateur trouvé dans la base de donnée, null si aucun trouvé
+     */
+    public @Nullable User getUserFormEmail(@NonNull String email) {
+        if (email.equals("")) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -214,7 +295,13 @@ public class DataBase extends SQLiteOpenHelper {
         return user;
     }
 
-    public User getUserFromUsername(String username) {
+    /**
+     * Obtient un utilisateur de la base de donnée en fonction de son nom
+     * @param username Le nom de l'utilisateur à chercher
+     * @return L'utilisateur trouvé dans la base de donnée, null si aucun trouvé
+     */
+    public @Nullable User getUserFromUsername(@NonNull String username) {
+        if (username.equals("")) return null;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -232,7 +319,12 @@ public class DataBase extends SQLiteOpenHelper {
         return user;
     }
 
-    public User getUserFromId(long id) {
+    /**
+     * Obtient un utilisateur de la base de donnée en fonction de son id
+     * @param id Id de l'utilisateur à chercher
+     * @return L'utilisateur trouvé dans la base de donnée, null si aucun trouvé
+     */
+    public @Nullable User getUserFromId(long id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(
@@ -250,11 +342,45 @@ public class DataBase extends SQLiteOpenHelper {
         return user;
     }
 
-    public List<Place> getAllPlaces() {
+    public @NonNull List<User> getAllFriendByUser(@NonNull User user) {
+        List<User> users = new LinkedList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(
+                TABLE_FRIENDS,
+                FRIENDS_COLUMNS,
+                KEY_FRIEND_USER1_ID.getV1()+" = ? OR "+ KEY_FRIEND_USER2_ID.getV1()+" = ?",
+                new String[] {String.valueOf(user.getId()), String.valueOf(user.getId())},
+                null,
+                null,
+                null,
+                null
+                );
+        if (cursor != null && cursor.moveToFirst()){
+            do {
+                long id1 = cursor.getLong(0);
+                long id2 = cursor.getLong(1);
+                User tmp = getUserFromId(id1==user.getId()?id2:id1);
+                users.add(tmp);
+            }while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return users;
+    }
+
+    /**
+     * Obtient tout les lieux de la base de donnée
+     * @return Une liste qui contient tout les lieux de la base de donnée
+     */
+    public @NonNull List<Place> getAllPlaces() {
         return getAllPlaces(null);
     }
 
-    public List<Category> getAllCategories() {
+    /**
+     * Obtient toute les catégories de la base ded onnée
+     * @return Une liste qui contient toute les catégories de la base de donnée
+     */
+    public @NonNull List<Category> getAllCategories() {
         List<Category> categories = new LinkedList<>();
 
         String query = "SELECT * FROM "+TABLE_CATEGORIES ;
@@ -278,7 +404,11 @@ public class DataBase extends SQLiteOpenHelper {
         return categories;
     }
 
-    public List<User> getAllUsers() {
+    /**
+     * Obtient tout les utilisateurs de la base de donnée
+     * @return Une liste qui contient tout les utilisateurs de la base de donnée
+     */
+    public @NonNull List<User> getAllUsers() {
         List<User> users = new LinkedList<>();
         String query = "SELECT * FROM "+TABLE_USERS;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -302,7 +432,22 @@ public class DataBase extends SQLiteOpenHelper {
         return users;
     }
 
-    public List<Recyclerable> getAllPlacesGroupByCategory() {
+    /**
+     * Obtient tout les lieux de la base de données groupé par catégorie
+     * La liste contient à la fois les lieux et les catégorie. eg:
+     * <ul>
+     *     <li><b>Bar</b><ul>
+     *         <li>bar1</li>
+     *         <li>bar2</li>
+     *     </ul></li>
+     *     <li><b>Restaurant</b><ul>
+     *         <li>Restaurant1</li>
+     *         <li>Restaurant2</li>
+     *     </ul></li>
+     * </ul>
+     * @return Une list contenant les catégories ainsi que les lieux associé à chaque catégorie
+     */
+    public @NonNull List<Recyclerable> getAllPlacesGroupByCategory() {
         List<Recyclerable> recyclerables = new LinkedList<>();
         for (Category category:getAllCategories()) {
             recyclerables.add(category);
@@ -313,7 +458,12 @@ public class DataBase extends SQLiteOpenHelper {
     }
 
 
-    private List<Place> getAllPlaces(Category category) {
+    /**
+     * Obtient tout les lieux d'une catégorie
+     * @param category Categorie utilisé pour filtrer les lieux, null pour obtenir tous
+     * @return Une liste contenant les lieux associé à la catégorie
+     */
+    private @NonNull List<Place> getAllPlaces(@Nullable Category category) {
         List<Place> places = new LinkedList<>();
         String query = "SELECT * FROM "+TABLE_PLACES
                 + (category!=null?" WHERE "+KEY_PLACE_CATEGORY_ID.getV1()+" = "+category.getId():"")
@@ -343,7 +493,41 @@ public class DataBase extends SQLiteOpenHelper {
         return places;
     }
 
-    public Category updateCategory(Category category) {
+    public List<User> getAllUserWithout(User user) {
+        List<User> users = getAllUsers();
+        users.remove(user);
+        return users;
+    }
+
+    public boolean containsFriend(@NonNull SQLiteDatabase db, @NonNull User user1, @NonNull User user2) {
+        Cursor cursor = db.query(
+                TABLE_FRIENDS,
+                FRIENDS_COLUMNS,
+                "("+KEY_FRIEND_USER1_ID.getV1()+" = ? AND "+ KEY_FRIEND_USER2_ID.getV1()+" = ?)" +
+                "OR ("+KEY_FRIEND_USER1_ID.getV1()+" = ? AND "+ KEY_FRIEND_USER2_ID.getV1()+" = ?)",
+                new String[] {String.valueOf(user1.getId()), String.valueOf(user2.getId()),
+                        String.valueOf(user2.getId()), String.valueOf(user1.getId())},
+                null,
+                null,
+                null,
+                null
+        );
+        if (cursor != null && cursor.moveToFirst()) {
+            cursor.close();
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * LES FONCTIONS DE MISE A JOUR
+     */
+
+    /**
+     * Met à jour une catégorie
+     * @param category Catégorie à mettre à jour
+     */
+    public void updateCategory(@NonNull Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -359,10 +543,13 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
 
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Update category :"+category);
-        return category;
     }
 
-    public Place updatePlace(Place place) {
+    /**
+     * Met à jour un lieu
+     * @param place Lieu à mettre à jour
+     */
+    public void updatePlace(@NonNull Place place) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -385,10 +572,13 @@ public class DataBase extends SQLiteOpenHelper {
         db.close();
 
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Update place :"+place);
-        return place;
     }
 
-    public User updateUser(User user) {
+    /**
+     * Met à jour un utilisateur
+     * @param user Utilisateur à mettre à jour
+     */
+    public void updateUser(@NonNull User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_USER_USERNAME.getV1(), user.getUsername());
@@ -405,10 +595,17 @@ public class DataBase extends SQLiteOpenHelper {
         );
         db.close();
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Update user :"+user);
-        return user;
     }
 
-    public void deleteCategory(Category category) {
+    /*
+     * FONCTIONS DE SUPPRESSION
+     */
+
+    /**
+     * Supprime une catégorie
+     * @param category Catégorie à supprimer
+     */
+    public void deleteCategory(@NonNull Category category) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(
                 TABLE_CATEGORIES,
@@ -420,7 +617,11 @@ public class DataBase extends SQLiteOpenHelper {
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Delete category :"+category);
     }
 
-    public void deletePlace(Place place) {
+    /**
+     * Supprime un lieu
+     * @param place Lieu à supprimer
+     */
+    public void deletePlace(@NonNull Place place) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(
                 TABLE_PLACES,
@@ -432,7 +633,15 @@ public class DataBase extends SQLiteOpenHelper {
         Log.d(ValueHelper.INSTANCE.getTag(), "[SQLite]Delete placeFragment :"+place);
     }
 
-    private void insertDefaultValues(SQLiteDatabase db) {
+    /*
+     * FONCTIONS UTILES
+     */
+
+    /**
+     * Inser des valeurs dans la base de donnée
+     * @param db Base de donnée à utiliser
+     */
+    private void insertDefaultValues(@NonNull SQLiteDatabase db) {
         addCategory(db ,new Category("bar"));
         addCategory(db, new Category("restaurant"));
         addCategory(db, new Category("fast-food"));
@@ -450,15 +659,26 @@ public class DataBase extends SQLiteOpenHelper {
                 "40 Rue de la Chèvre, 57000 Metz, France", getCategory(db ,"restaurant"),
                 "", "https://img.over-blog-kiwi.com/1020x765/1/26/14/30/20141019/ob_82fa48_sushi-city-wok.jpg"));
 
-        addUser(db, new User("dede", "adinquer@yahoo.com", "password", Gender.MAN,"https://i.pinimg.com/originals/71/77/ce/7177ce0c34063053ed5f7218d6ebb458.jpg"));
-        addUser(db, new User("goliem", "golime@sam.io", "password", Gender.MAN));
-        addUser(db, new User("kratheon", "kratheon@sam.io", "password", Gender.MAN));
-        addUser(db, new User("bob", "bob@sam.io", "password", Gender.MAN));
-        addUser(db, new User("alice", "alice@sam.io", "password", Gender.WOMAN));
+        User dede = new User("dede", "adinquer@yahoo.com", "password", Gender.MAN,"https://i.pinimg.com/originals/71/77/ce/7177ce0c34063053ed5f7218d6ebb458.jpg");
+        User goliem = new User("goliem", "golime@sam.io", "password", Gender.MAN);
+        User kratheon = new User("kratheon", "kratheon@sam.io", "password", Gender.MAN);
+        User bob = new User("bob", "bob@sam.io", "password", Gender.MAN);
+        User alice = new User("alice", "alice@sam.io", "password", Gender.WOMAN);
+
+        addUser(db, dede);
+        addUser(db, goliem);
+        addUser(db, kratheon);
+        addUser(db, bob);
+        addUser(db, alice);
+
+        addFriend(db, dede, goliem);
+        addFriend(db, kratheon, dede);
+        addFriend(db, goliem, kratheon);
+        addFriend(db, bob, alice);
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+    public void onCreate(@NonNull SQLiteDatabase db) {
         String createCategoryTable = "CREATE TABLE "+TABLE_CATEGORIES+" (" +
                 KEY_CATEGORY_ID.getV1() + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 KEY_CATEGORY_DESCRIPTION.getV1() + " TINYTEXT)";
@@ -480,26 +700,38 @@ public class DataBase extends SQLiteOpenHelper {
                 KEY_USER_GENDER.getV1()+ " INT,"+
                 KEY_USER_AVATAR.getV1()+ " TEXT)";
 
+        String createFriendTable = "CREATE TABLE "+TABLE_FRIENDS+" ("+
+                KEY_FRIEND_USER1_ID.getV1()+" INTEGER NOT NULL, "+
+                KEY_FRIEND_USER2_ID.getV1()+" INTEGER NOT NULL, " +
+                "PRIMARY KEY("+KEY_FRIEND_USER1_ID.getV1()+","+KEY_FRIEND_USER2_ID.getV1()+"))";
+
         db.execSQL(createCategoryTable);
         db.execSQL(createPlaceTable);
         db.execSQL(createUserTable);
+        db.execSQL(createFriendTable);
         insertDefaultValues(db);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void onUpgrade(@NonNull SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_PLACES);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_CATEGORIES);
         db.execSQL("DROP TABLE IF EXISTS "+TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS "+TABLE_FRIENDS);
         this.onCreate(db);
     }
 
 
-    private Category cursorToCategory(Cursor cursor) {
-        Category category = new Category();
+    /**
+     * Obtient une catégorie à partir d'un objet cursor
+     * @param cursor Curseur sur le résultat d'un SELECT SQL
+     * @return La catégorie correspondant, null si le curseur n'est pas associé à une catégorie
+     */
+    private @Nullable Category cursorToCategory(@Nullable Cursor cursor) {
+        Category category = null;
 
-        if (cursor != null){
-            cursor.moveToFirst();
+        if (cursor != null && cursor.moveToFirst()){
+            category = new Category();
 
             category.setId(Integer.parseInt(cursor.getString(0)));
             category.setDescription(cursor.getString(1));
@@ -512,7 +744,12 @@ public class DataBase extends SQLiteOpenHelper {
         return category;
     }
 
-    private User cursorToUser(Cursor cursor) {
+    /**
+     * Obtient un utilisateur à partir d'un objet cursor
+     * @param cursor Curseur sur le résultat d'un SELECT SQL
+     * @return L'utilisateur correspondant, null si le curseur n'est pas associé à un utilisateur
+     */
+    private @Nullable User cursorToUser(@Nullable Cursor cursor) {
         User user = null;
         if (cursor != null && cursor.moveToFirst()){
             user = new User();
@@ -528,4 +765,7 @@ public class DataBase extends SQLiteOpenHelper {
         }
         return user;
     }
+
+
+
 }

@@ -2,9 +2,11 @@ package a1819.m2ihm.sortirametz.bdd.dao.sqlite;
 
 import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.models.Category;
+import a1819.m2ihm.sortirametz.models.Recyclerable;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -39,4 +41,6 @@ public final class SQLiteCategoryDAO extends SQLiteDAO implements CategoryDAO {
     public void delete(@NonNull Category obj) {
         this.dataBase.deleteCategory(obj);
     }
+
+
 }

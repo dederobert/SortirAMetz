@@ -139,9 +139,11 @@
     <string name="pref_header_security">Security</string>
     <string name="pref_title_use_fingerprint">Use fingerprint</string>
     <string name="friends">Friends</string>
-    <string name="places">Places</string>
+    <string name="elements">Places</string>
     <string name="map">Map</string>
     <string name="gender">Gender</string>
     <string name="default_man_icon" translatable="false">"https://cdn4.iconfinder.com/data/icons/user-avatar-flat-icons/512/User_Avatar-31-512.png"</string>
     <string name="default_woman_icon" translatable="false">"https://www.shareicon.net/download/2016/09/01/822726_user_512x512.png"</string>
+    <string name="search_somebody">Search somebody</string>
+    <string name="add_as_friend">Add</string>
 </resources>

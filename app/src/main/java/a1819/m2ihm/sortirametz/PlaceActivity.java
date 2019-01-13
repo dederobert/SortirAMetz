@@ -7,6 +7,7 @@ import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
+import a1819.m2ihm.sortirametz.utils.UniqueId;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
@@ -32,14 +33,13 @@ import java.util.Objects;
 public class PlaceActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TextWatcher, View.OnFocusChangeListener {
 
 
-    public static final int RESULT_ADD = 10;
-    public static final int RESULT_EDIT = 11;
+    public static final int REQUEST_ADD = UniqueId.INSTANCE.nextValue();
+    public static final int REQUEST_EDIT = UniqueId.INSTANCE.nextValue();
 
     private PlaceDAO placeDAO;
     @BindView(R.id.place_main_layout) RelativeLayout place_main_layout;
     @BindView(R.id.edt_name) EditText edt_name;
-    @BindView(R.id.edt_coord) private EditText edt_coord;
-    //private Button btn_coord;
+    @BindView(R.id.edt_coord) EditText edt_coord;
     @BindView(R.id.edt_address) EditText edt_address;
     @BindView(R.id.edt_description) EditText edt_description;
     @BindView(R.id.edt_icon) EditText edt_icon;
@@ -49,30 +49,24 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
     private PlaceActivity activity;
 
     private Category selectedCategory;
-    private boolean add;
+    private boolean addMode;
     private Place place = null;
     private final int PLACE_PICKER_REQUEST = 1;
 
     @OnClick(R.id.btn_save) void save() {
-        if (add) {
-            place.setName(edt_name.getText().toString());
-            place.setAddress(edt_address.getText().toString());
-            place.setCategory(selectedCategory);
-            place.setDescription(edt_description.getText().toString());
-            place.setIcon(edt_icon.getText().toString());
+        place.setName(edt_name.getText().toString());
+        place.setAddress(edt_address.getText().toString());
+        place.setCategory(selectedCategory);
+        place.setDescription(edt_description.getText().toString());
+        place.setIcon(edt_icon.getText().toString());
+
+        if (addMode) {
             placeDAO.create(place);
-            //TODO SUPPRIMER L'APPEL STATIC
-            ConsultFragment.adapter.insertPlace(place);
-            this.setResult(RESULT_OK);
-        } else {
-            place.setName(edt_name.getText().toString());
-            place.setAddress(edt_address.getText().toString());
-            place.setCategory(selectedCategory);
-            place.setDescription(edt_description.getText().toString());
-            place.setIcon(edt_icon.getText().toString());
+            getIntent().putExtra("placeId", place.getId());
+        } else
             placeDAO.update(place);
-            this.setResult(RESULT_OK);
-        }
+
+        this.setResult(RESULT_OK);
         this.finish();
     }
 
@@ -89,19 +83,19 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
 
         activity = this;
         long placeId = getIntent().getLongExtra("placeId", -1);
-        this.add = (placeId==-1);
+        this.addMode = (placeId==-1);
 
         AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ValueHelper.INSTANCE.getFactoryType()));
         placeDAO = factory.getPlaceDAO();
         CategoryDAO categoryDAO = factory.getCategoryDAO();
 
-        if (!add) place = placeDAO.find(placeId);
+        if (!addMode) place = placeDAO.find(placeId);
         else place = new Place();
 
-        if (add)
+        if (addMode)
             startPicker();
 
-        String title = add?getResources().getString(R.string.add_title)
+        String title = addMode ?getResources().getString(R.string.add_title)
                 :(getResources().getString(R.string.edit_title) + " "+place.getName());
         setTitle(title);
 
@@ -116,7 +110,7 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spi_category.setAdapter(adapter);
 
-        if (!add) {
+        if (!addMode) {
             edt_name.setText(place.getName());
             edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatitude(),place.getLongitude()));
             edt_address.setText(place.getAddress());
@@ -145,8 +139,8 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
             if (resultCode == RESULT_OK) {
                 com.google.android.gms.location.places.Place place = PlacePicker.getPlace(this, data);
                 edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatLng().latitude, place.getLatLng().longitude));
-                if (add) edt_address.setText(place.getAddress());
-                if (add) edt_name.setText(place.getName());
+                if (addMode) edt_address.setText(place.getAddress());
+                if (addMode) edt_name.setText(place.getName());
                 this.place.setLatitude((float) place.getLatLng().latitude);
                 this.place.setLongitude((float) place.getLatLng().longitude);
                 Toast.makeText(this, R.string.place_picked, Toast.LENGTH_LONG).show();

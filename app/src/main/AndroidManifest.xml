@@ -51,6 +51,7 @@
                 android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".FingerPrintActivity"/>
+        <activity android:name=".CategoryActivity"/>
     </application>
 
 </manifest>

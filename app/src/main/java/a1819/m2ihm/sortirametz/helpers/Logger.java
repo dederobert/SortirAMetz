@@ -8,6 +8,8 @@ import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -174,6 +176,7 @@ public enum Logger {
             user = Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ValueHelper.INSTANCE.getFactoryType()))
                     .getUserDAO().findByUsername(sharedPreferences.getString(LOGIN_FIELD, ""));
         }
+        Log.d("LOGGER", "User logged "+ this.user);
     }
     /**
      * Disconnect the user
@@ -187,4 +190,7 @@ public enum Logger {
         this.logged = false;
     }
 
+    public User getUser() {
+        return user;
+    }
 }

@@ -105,7 +105,7 @@ public class Place implements Recyclerable {
     }
 
     @Override
-    public boolean isHeader() {
-        return false;
+    public Type getType() {
+        return Type.PLACE;
     }
 }
