@@ -10,7 +10,8 @@ public abstract class AbstractDAOFactory {
 
     public enum FactoryType {
         SQLite,
-        Mariadb
+        Mariadb,
+        ContentProvider
     }
 
     protected Context context;
@@ -25,10 +26,11 @@ public abstract class AbstractDAOFactory {
 
     @NonNull
     public static AbstractDAOFactory getFactory(Context context, FactoryType type) {
-        if (type.equals(FactoryType.SQLite))
-            return new SQLiteDAOFactory(context);
-        else
-            return new MariaDBDAOFactory(context);
+        switch (type) {
+            case ContentProvider: return new ContentProviderDAOFactory(context);
+            case Mariadb: return new MariaDBDAOFactory(context);
+            default: return new SQLiteDAOFactory(context);
+        }
     }
 
 }
