@@ -1,36 +1,38 @@
 package a1819.m2ihm.sortirametz.adapter;
 
-import a1819.m2ihm.sortirametz.ConsultActivity;
-import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
+import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
 import java.util.Objects;
 
-public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+public abstract class ListAdapter<T extends Recyclerable> extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private static final int LAYOUT_HEADER= 0;
-    private static final int LAYOUT_CHILD= 1;
 
-    private List<Recyclerable> places;
-    private ConsultActivity context;
+    static final int LAYOUT_HEADER= 0;
+    static final int LAYOUT_CHILD= 1;
 
-    public ListAdapter(ConsultActivity context, List<Recyclerable> places) {
-        this.places = places;
+
+    List<T> elements;
+    private Context context;
+
+    ListAdapter(Context context, List<T> elements) {
+        this.elements = elements;
         this.context = context;
     }
 
+
     @Override
     public int getItemViewType(int position) {
-        if(places.get(position).isHeader()) {
+        if(elements.get(position).getType().equals(Recyclerable.Type.CATEGORY)) {
             return LAYOUT_HEADER;
         }else
             return LAYOUT_CHILD;
@@ -38,64 +40,49 @@ public class ListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder;
-        if (viewType==LAYOUT_HEADER){
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.header_card, parent, false);
-            viewHolder = new CategoryListHolder(view);
-        }else{
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.place_card, parent, false);
-            viewHolder = new PlaceListHolder(view);
-        }
-        return viewHolder;
-    }
+    public abstract RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType);
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder.getItemViewType()==LAYOUT_HEADER){
-            Category category = (Category) places.get(position);
-            ((CategoryListHolder)holder).bind(category);
-        }else {
-            Place place = (Place) places.get(position);
-            ((PlaceListHolder)holder).bind(place);
-        }
-
-    }
+    public abstract void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position);
 
     @Override
     public int getItemCount() {
-        return places.size();
+        return elements.size();
     }
 
     public void removeItem(int position) {
-        places.remove(position);
+        elements.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void restoreItem(Place place, int position) {
-        places.add(position, place);
+    public void restoreItem(T element, int position) {
+        elements.add(position, element);
         notifyItemInserted(position);
     }
 
-    public Recyclerable getPlace(int position) {
-        return places.get(position);
+    public T getElement(int position) {
+        return elements.get(position);
     }
 
+    public abstract void removeElementFromDatabase(@NonNull T element);
 
-    public void removePlaceFromDatabase(Place place) {
-        Objects.requireNonNull(AbstractDAOFactory.getFactory(context, ConsultActivity.FACTORY_TYPE))
-                .getPlaceDAO().delete(place);
-    }
-
-    public void updateItems(List<Recyclerable> places) {
-        this.places = places;
+    public void updateItems(List<T> elements) {
+        this.elements = elements;
         notifyDataSetChanged();
     }
 
-    public void insertPlace(Place place) {
-        places.add(place);
-        notifyItemInserted(places.size()-1);
+    public void updateItem(T elements, int position) {
+        if (position == -1 || elements == null) return;
+        this.elements.set(position,elements);
+        notifyItemChanged(position);
+    }
+
+    public void insertElement(T element) {
+        elements.add(element);
+        notifyItemInserted(elements.size()-1);
+    }
+
+    public Context getContext() {
+        return context;
     }
 }

@@ -1,6 +1,8 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.helpers.Logger;
+import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
+import a1819.m2ihm.sortirametz.utils.UniqueId;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,19 +11,16 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
 
-import static android.view.KeyEvent.KEYCODE_ENTER;
-
-
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int REQUEST_SINGUP = 0;
+    private static final int REQUEST_SINGUP = UniqueId.INSTANCE.nextValue();
+    private static final int REQUEST_FINGERPRINT = UniqueId.INSTANCE.nextValue();
 
     @BindView(R.id.edt_login_username) EditText edt_username;
     @BindView(R.id.edt_login_password) EditText edt_password;
@@ -60,16 +59,33 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Logger.INSTANCE.isLogged(this)) {
+            Logger.INSTANCE.loadUser(this);
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
+        if (PreferencesHelper.INSTANCE.useFingerprint(this)) {
+            Intent intent = new Intent(this, FingerPrintActivity.class);
+            startActivityForResult(intent, REQUEST_FINGERPRINT);
+        }
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        edt_password.setImeActionLabel(this.getResources().getString(R.string.login), KEYCODE_ENTER);
     }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        if (requestCode == REQUEST_SINGUP){
+        if (requestCode == REQUEST_SINGUP) {
             if (resultCode == RESULT_OK) {
-                setResult(RESULT_OK);
+                startActivity(new Intent(this, MainActivity.class));
+                this.finish();
+            }
+        } else if (requestCode == REQUEST_FINGERPRINT) {
+            if (resultCode == RESULT_OK) {
+                Logger.INSTANCE.loadUser(this);
+                startActivity(new Intent(this, MainActivity.class));
                 this.finish();
             }
         }
@@ -109,7 +125,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void onLoginSuccess() {
         btn_login.setEnabled(true);
-        setResult(RESULT_OK);
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 }

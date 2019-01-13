@@ -1,20 +1,20 @@
 package a1819.m2ihm.sortirametz;
 
 import a1819.m2ihm.sortirametz.helpers.Logger;
+import a1819.m2ihm.sortirametz.models.Gender;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    @BindView(R.id.img_register_user_avatar) ImageView img_register_user_avatar;
+    @BindView(R.id.swt_register_gender) Switch swt_register_gender;
     @BindView(R.id.edt_register_username) EditText edt_username;
     @BindView(R.id.edt_register_email) EditText edt_email;
     @BindView(R.id.edt_register_password) EditText edt_password;
@@ -32,9 +32,10 @@ public class RegisterActivity extends AppCompatActivity {
         String username = edt_username.getText().toString();
         String email = edt_email.getText().toString();
         String password = edt_password.getText().toString();
+        Gender gender = (swt_register_gender.isChecked())?Gender.MAN:Gender.WOMAN;
 
 
-        if (Logger.INSTANCE.register(this, username, email, password))
+        if (Logger.INSTANCE.register(this, username, email, password, gender))
             onSignupSuccess();
         else
             onSignupFailed();

@@ -6,7 +6,7 @@
         xmlns:map="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="a1819.m2ihm.sortirametz.MapsActivity"
+        tools:context="a1819.m2ihm.sortirametz.MapsFragment"
 >
 
     <RelativeLayout
@@ -35,16 +35,6 @@
                 android:layout_toEndOf="@id/edt_filter_radius"
                 android:layout_centerVertical="true"
                 />
-
-        <!--<Button
-                android:text="@string/filter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/btn_filter"
-                android:layout_toEndOf="@id/spi_filter_category"
-                android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                />-->
     </RelativeLayout>
 
     <RelativeLayout

@@ -40,6 +40,12 @@ public enum PreferencesHelper {
         public String getSymbol() {
             return this.symbol;
         }
+
+    }
+
+    public boolean useFingerprint(Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPreferences.getBoolean("use_fingerprint", false);
     }
 
     public Unit getUnit(Context context) {
@@ -53,4 +59,5 @@ public enum PreferencesHelper {
         String interval = sharedPreferences.getString("sync_frequency", "9000");
         return Long.parseLong(interval);
     }
+
 }

@@ -1,16 +1,18 @@
 package a1819.m2ihm.sortirametz.bdd.dao.sqlite;
 
 import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
+import a1819.m2ihm.sortirametz.helpers.Logger;
 import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
+public final class SQLiteUserDAO extends SQLiteDAO implements UserDAO {
 
-    public SQLiteUserDAO(Context context) {
+    public SQLiteUserDAO(@NonNull Context context) {
         super(context);
     }
 
@@ -21,20 +23,31 @@ public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
 
     @Override
     public User find(long id) {
-        //TODO make this
         return this.dataBase.getUserFromId(id);
     }
 
     @Nullable
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(@NonNull String username) {
         return this.dataBase.getUserFromUsername(username);
     }
 
     @Nullable
     @Override
-    public User findByEmail(String email) {
+    public User findByEmail(@NonNull String email) {
         return this.dataBase.getUserFormEmail(email);
+    }
+
+    @NonNull
+    @Override
+    public List<User> findAllFriend(@NonNull User user) {
+        return this.dataBase.getAllFriendByUser(user);
+    }
+
+    @NotNull
+    @Override
+    public List<User> findAllOther() {
+        return this.dataBase.getAllUserWithout(Logger.INSTANCE.getUser());
     }
 
     @Override
@@ -43,8 +56,8 @@ public final class SQLiteUserDAO extends SQLiteDAO<User> implements UserDAO {
     }
 
     @Override
-    public User update(@NonNull User obj) {
-        return this.dataBase.updateUser(obj);
+    public void update(@NonNull User obj) {
+        this.dataBase.updateUser(obj);
     }
 
     @Override

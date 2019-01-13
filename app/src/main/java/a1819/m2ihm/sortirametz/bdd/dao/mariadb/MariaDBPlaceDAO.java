@@ -9,7 +9,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class MariaDBPlaceDAO extends MariaDBDAO<Place> implements PlaceDAO {
+public final class MariaDBPlaceDAO extends MariaDBDAO implements PlaceDAO {
     public MariaDBPlaceDAO(Context context) {
         super(context);
     }
@@ -31,8 +31,7 @@ public final class MariaDBPlaceDAO extends MariaDBDAO<Place> implements PlaceDAO
     }
 
     @Override
-    public Place update(@NonNull Place obj) {
-        return null;
+    public void update(@NonNull Place obj) {
     }
 
     @Override

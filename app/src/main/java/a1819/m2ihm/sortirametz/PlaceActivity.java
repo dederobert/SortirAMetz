@@ -3,9 +3,11 @@ package a1819.m2ihm.sortirametz;
 import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
 import a1819.m2ihm.sortirametz.bdd.factory.AbstractDAOFactory;
+import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.map.Locator;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
+import a1819.m2ihm.sortirametz.utils.UniqueId;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
@@ -15,6 +17,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.*;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.ui.PlacePicker;
@@ -25,65 +30,78 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-//TODO update this class
-public class PlaceActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemSelectedListener, TextWatcher, View.OnFocusChangeListener {
+public class PlaceActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, TextWatcher, View.OnFocusChangeListener {
 
 
-    public static final int RESULT_ADD = 10;
-    public static final int RESULT_EDIT = 11;
+    public static final int REQUEST_ADD = UniqueId.INSTANCE.nextValue();
+    public static final int REQUEST_EDIT = UniqueId.INSTANCE.nextValue();
 
     private PlaceDAO placeDAO;
-    private RelativeLayout place_main_layout;
-    private EditText edt_name;
-    private EditText edt_coord;
-    //private Button btn_coord;
-    private EditText edt_address;
-    private EditText edt_description;
-    private EditText edt_icon;
-    private ImageView img_icon;
-    private Button btn_save;
+    @BindView(R.id.place_main_layout) RelativeLayout place_main_layout;
+    @BindView(R.id.edt_name) EditText edt_name;
+    @BindView(R.id.edt_coord) EditText edt_coord;
+    @BindView(R.id.edt_address) EditText edt_address;
+    @BindView(R.id.edt_description) EditText edt_description;
+    @BindView(R.id.edt_icon) EditText edt_icon;
+    @BindView(R.id.img_icon) ImageView img_icon;
+    @BindView(R.id.spi_category) Spinner spi_category;
 
     private PlaceActivity activity;
 
     private Category selectedCategory;
-    private boolean add;
+    private boolean addMode;
     private Place place = null;
     private final int PLACE_PICKER_REQUEST = 1;
+    private int position;
+
+    @OnClick(R.id.btn_save) void save() {
+        place.setName(edt_name.getText().toString());
+        place.setAddress(edt_address.getText().toString());
+        place.setCategory(selectedCategory);
+        place.setDescription(edt_description.getText().toString());
+        place.setIcon(edt_icon.getText().toString());
+
+        if (addMode)
+            place = placeDAO.create(place);
+        else
+            placeDAO.update(place);
+
+        this.setResult(RESULT_OK, new Intent().putExtra("placeId", place.getId()).putExtra("position", position));
+        this.finish();
+    }
+
+    @OnClick(R.id.btn_cancel) void cancel() {
+        setResult(RESULT_CANCELED);
+        this.finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place);
+        ButterKnife.bind(this);
+
         activity = this;
         long placeId = getIntent().getLongExtra("placeId", -1);
-        this.add = (placeId==-1);
+        this.addMode = (placeId==-1);
+        position = getIntent().getIntExtra("position", -1);
 
-        AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ConsultActivity.FACTORY_TYPE));
+        AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ValueHelper.INSTANCE.getFactoryType()));
         placeDAO = factory.getPlaceDAO();
         CategoryDAO categoryDAO = factory.getCategoryDAO();
 
-        if (!add) place = placeDAO.find(placeId);
+        if (!addMode) place = placeDAO.find(placeId);
         else place = new Place();
 
-        if (add)
+        if (addMode)
             startPicker();
 
-        String title = add?getResources().getString(R.string.add_title)
+        String title = addMode ?getResources().getString(R.string.add_title)
                 :(getResources().getString(R.string.edit_title) + " "+place.getName());
         setTitle(title);
 
-        place_main_layout = findViewById(R.id.place_main_layout);
-        edt_name = findViewById(R.id.edt_name);
-        edt_coord = findViewById(R.id.edt_coord);
         edt_coord.setOnFocusChangeListener(this);
-        edt_address = findViewById(R.id.edt_address);
-        Spinner spi_category = findViewById(R.id.spi_category);
-        edt_description = findViewById(R.id.edt_description);
-        edt_icon = findViewById(R.id.edt_icon);
         edt_icon.addTextChangedListener(this);
-        img_icon = findViewById(R.id.img_icon);
-        btn_save = findViewById(R.id.btn_save);
-        Button btn_cancel = findViewById(R.id.btn_cancel);
 
         //Set spinner content
         List<Category> categories = categoryDAO.findAll();
@@ -93,10 +111,7 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spi_category.setAdapter(adapter);
 
-        btn_save.setOnClickListener(this);
-        btn_cancel.setOnClickListener(this);
-
-        if (!add) {
+        if (!addMode) {
             edt_name.setText(place.getName());
             edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatitude(),place.getLongitude()));
             edt_address.setText(place.getAddress());
@@ -125,8 +140,8 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
             if (resultCode == RESULT_OK) {
                 com.google.android.gms.location.places.Place place = PlacePicker.getPlace(this, data);
                 edt_coord.setText(String.format(Locale.FRANCE,"%f, %f",place.getLatLng().latitude, place.getLatLng().longitude));
-                if (add) edt_address.setText(place.getAddress());
-                if (add) edt_name.setText(place.getName());
+                if (addMode) edt_address.setText(place.getAddress());
+                if (addMode) edt_name.setText(place.getName());
                 this.place.setLatitude((float) place.getLatLng().latitude);
                 this.place.setLongitude((float) place.getLatLng().longitude);
                 Toast.makeText(this, R.string.place_picked, Toast.LENGTH_LONG).show();
@@ -134,33 +149,6 @@ public class PlaceActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.equals(btn_save)) {
-            if (add) {
-                place.setName(edt_name.getText().toString());
-                place.setAddress(edt_address.getText().toString());
-                place.setCategory(selectedCategory);
-                place.setDescription(edt_description.getText().toString());
-                place.setIcon(edt_icon.getText().toString());
-                placeDAO.create(place);
-                ConsultActivity.adapter.insertPlace(place);
-                this.setResult(RESULT_OK);
-            } else {
-                place.setName(edt_name.getText().toString());
-                place.setAddress(edt_address.getText().toString());
-                place.setCategory(selectedCategory);
-                place.setDescription(edt_description.getText().toString());
-                place.setIcon(edt_icon.getText().toString());
-                placeDAO.update(place);
-                this.setResult(RESULT_OK);
-            }
-            this.finish();
-        }else {
-            setResult(RESULT_CANCELED);
-            this.finish();
-        }
-    }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

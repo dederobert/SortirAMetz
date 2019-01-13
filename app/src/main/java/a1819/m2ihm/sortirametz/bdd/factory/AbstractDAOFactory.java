@@ -4,12 +4,13 @@ import a1819.m2ihm.sortirametz.bdd.dao.CategoryDAO;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
 import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 public abstract class AbstractDAOFactory {
 
     public enum FactoryType {
         SQLite,
-        Mariadb;
+        Mariadb
     }
 
     protected Context context;
@@ -22,12 +23,12 @@ public abstract class AbstractDAOFactory {
     public abstract CategoryDAO getCategoryDAO();
     public abstract PlaceDAO getPlaceDAO();
 
+    @NonNull
     public static AbstractDAOFactory getFactory(Context context, FactoryType type) {
         if (type.equals(FactoryType.SQLite))
             return new SQLiteDAOFactory(context);
-        else if (type.equals(FactoryType.Mariadb))
+        else
             return new MariaDBDAOFactory(context);
-        return null;
     }
 
 }

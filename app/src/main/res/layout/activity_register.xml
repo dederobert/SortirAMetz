@@ -12,10 +12,35 @@
             android:paddingEnd="@dimen/list_item_padding_login"
             >
 
+        <ImageView
+                android:id="@+id/img_register_user_avatar"
+                android:layout_width="@dimen/user_icon_size"
+                android:layout_height="@dimen/user_icon_size"
+                android:layout_marginEnd="@dimen/list_item_padding_sides"
+                android:scaleType="centerCrop"
+                />
+
+        <TextView
+                android:id="@+id/lbl_register_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gender"
+                android:layout_toEndOf="@id/img_register_user_avatar"
+                />
+
+        <Switch
+                android:id="@+id/swt_register_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/lbl_register_gender"
+                />
+
         <android.support.design.widget.TextInputLayout
                 android:id="@+id/lbl_register_username"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img_register_user_avatar"
+                >
 
             <EditText
                     android:layout_width="match_parent"

@@ -100,26 +100,17 @@
 
     <string name="pref_title_system_sync_settings">Paramètres systèmes</string>
 
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
-
     <string name="pref_header_unit">Unités</string>
 
     <string name="pref_title_unit_distance">Distance</string>
-    <string name="error_username">Enter a valid username or email</string>
-    <string name="error_password">more 6 characters</string>
-    <string name="error_email">enter a valid email</string>
-    <string name="error_register">Signup failed</string>
-    <string name="error_login">Login Failed</string>
-    <string name="too_long_number">The given number is too long</string>
-    <string name="disconnect">Disconnect</string>
+    <string name="error_username">Entrer un nom d\'utilisateur ou un email valide</string>
+    <string name="error_password">Au moins 6 caractères</string>
+    <string name="error_email">Entrer un email valide</string>
+    <string name="error_register">Erreur d\'enregistrement</string>
+    <string name="error_login">Erreur de connection</string>
+    <string name="too_long_number">Le nombre donné est trop grand</string>
+    <string name="disconnect">Déconnection</string>
+    <string name="touch_sensor">Toucher le capteur</string>
     <string-array name="pref_unit_list_distance">
         <item>m</item>
         <item>ft</item>
@@ -129,4 +120,27 @@
         <item>m</item>
         <item>ft</item>
     </string-array>
+    <string name="fingerprint">Empreintes</string>
+    <string name="title_activity_friend">FriendActivity</string>
+    <string name="navigation_drawer_open">Ouvrir le menu de navigation</string>
+    <string name="navigation_drawer_close">Fermer le menu de navigation</string>
+    <string name="nav_header_title">SAM</string>
+    <string name="nav_header_subtitle">contact@sam.io</string>
+    <string name="nav_header_desc">En-tete de navigation</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="no_lock_screen">Le verouillage de l\'écrans n\'est pas activé</string>
+    <string name="no_fingerprint_permission">L\'authentification par empreinte n\'est pas permisse</string>
+    <string name="no_fingerprint_enrolled">Enregistrez au moins une empreinte dans les paramètres</string>
+    <string name="auth_error">Erreur d\'authentification\n</string>
+    <string name="auth_help">Aide à l\'authentification \n</string>
+    <string name="auth_failed">Authentification échoué</string>
+    <string name="auth_succeeded">Authentification réussie</string>
+    <string name="pref_header_security">Securité</string>
+    <string name="pref_title_use_fingerprint">Utiliser les empreintes</string>
+    <string name="friends">Friends</string>
+    <string name="elements">Places</string>
+    <string name="map">Map</string>
+    <string name="gender">Gender</string>
+    <string name="search_somebody">Trouver quelqu\'un</string>
+    <string name="add_as_friend">Ajouter</string>
 </resources>

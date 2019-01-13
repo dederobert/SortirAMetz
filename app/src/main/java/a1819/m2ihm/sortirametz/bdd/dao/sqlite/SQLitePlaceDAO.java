@@ -1,18 +1,15 @@
 package a1819.m2ihm.sortirametz.bdd.dao.sqlite;
 
-import a1819.m2ihm.sortirametz.bdd.dao.DAO;
 import a1819.m2ihm.sortirametz.bdd.dao.PlaceDAO;
-import a1819.m2ihm.sortirametz.bdd.dao.UserDAO;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.models.Recyclerable;
-import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class SQLitePlaceDAO extends SQLiteDAO<Place> implements PlaceDAO {
+public final class SQLitePlaceDAO extends SQLiteDAO implements PlaceDAO {
 
     public SQLitePlaceDAO(Context context) {
         super(context);
@@ -35,8 +32,8 @@ public final class SQLitePlaceDAO extends SQLiteDAO<Place> implements PlaceDAO {
     }
 
     @Override
-    public Place update(@NonNull Place obj) {
-        return this.dataBase.updatePlace(obj);
+    public void update(@NonNull Place obj) {
+        this.dataBase.updatePlace(obj);
     }
 
     @Override

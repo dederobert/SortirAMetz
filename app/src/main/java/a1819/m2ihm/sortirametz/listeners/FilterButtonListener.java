@@ -1,21 +1,23 @@
 package a1819.m2ihm.sortirametz.listeners;
 
-import a1819.m2ihm.sortirametz.MapsActivity;
+import a1819.m2ihm.sortirametz.MapsFragment;
 import a1819.m2ihm.sortirametz.R;
 import a1819.m2ihm.sortirametz.helpers.PreferencesHelper;
 import a1819.m2ihm.sortirametz.models.Category;
+import android.app.Activity;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class FilterButtonListener implements View.OnClickListener, TextView.OnEditorActionListener {
 
-    private final MapsActivity activity;
+    private final MapsFragment mapsFragment;
+    private final Activity activity;
 
-    public FilterButtonListener(MapsActivity mapsActivity) {
-        this.activity = mapsActivity;
+    public FilterButtonListener(MapsFragment mapsFragment, Activity activity) {
+        this.mapsFragment = mapsFragment;
+        this.activity = activity;
     }
 
     @Override
@@ -24,24 +26,24 @@ public class FilterButtonListener implements View.OnClickListener, TextView.OnEd
     }
 
     public void filter() {
-        String entry = activity.getRadius();
+        String entry = mapsFragment.getRadius();
         int radius = 200;
         if (entry!=null && !entry.equals(""))
             try {
                 radius = Integer.parseInt(entry);
             }catch (NumberFormatException e) {
                 Toast.makeText(this.activity,
-                        this.activity.getResources().getString(R.string.too_long_number),
+                        this.mapsFragment.getResources().getString(R.string.too_long_number),
                         Toast.LENGTH_LONG).show();
             }
 
-        Category category = activity.selectedCategory;
+        Category category = mapsFragment.selectedCategory;
 
-        activity.locator.circle.setRadius(PreferencesHelper.INSTANCE.getUnit(this.activity).convertToMeter(
+        mapsFragment.locator.circle.setRadius(PreferencesHelper.INSTANCE.getUnit(this.activity).convertToMeter(
                 radius));
-        activity.locator.mapFilter.setCategory(category);
-        activity.locator.mapFilter.setRadius(radius);
-        activity.locator.mapFilter.filterMarker();
+        mapsFragment.locator.mapFilter.setCategory(category);
+        mapsFragment.locator.mapFilter.setRadius(radius);
+        mapsFragment.locator.mapFilter.filterMarker();
     }
 
     @Override

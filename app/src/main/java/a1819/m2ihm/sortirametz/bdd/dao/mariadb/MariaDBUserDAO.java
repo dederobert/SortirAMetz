@@ -5,10 +5,12 @@ import a1819.m2ihm.sortirametz.models.User;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.LinkedList;
 import java.util.List;
 
-public final class MariaDBUserDAO extends MariaDBDAO<User> implements UserDAO {
+public final class MariaDBUserDAO extends MariaDBDAO implements UserDAO {
 
     public MariaDBUserDAO(Context context) {
         super(context);
@@ -31,8 +33,7 @@ public final class MariaDBUserDAO extends MariaDBDAO<User> implements UserDAO {
     }
 
     @Override
-    public User update(@NonNull User obj) {
-        return null;
+    public void update(@NonNull User obj) {
     }
 
     @Override
@@ -42,13 +43,25 @@ public final class MariaDBUserDAO extends MariaDBDAO<User> implements UserDAO {
 
     @Nullable
     @Override
-    public User findByUsername(String username) {
+    public User findByUsername(@NonNull String username) {
         return null;
     }
 
     @Nullable
     @Override
-    public User findByEmail(String email) {
+    public User findByEmail(@NonNull String email) {
         return null;
+    }
+
+    @NonNull
+    @Override
+    public List<User> findAllFriend(@NonNull User user) {
+        return new LinkedList<>();
+    }
+
+    @NotNull
+    @Override
+    public List<User> findAllOther() {
+        return new LinkedList<>();
     }
 }

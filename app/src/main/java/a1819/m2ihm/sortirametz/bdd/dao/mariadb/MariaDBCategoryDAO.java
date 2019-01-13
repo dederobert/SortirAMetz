@@ -8,7 +8,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public final class MariaDBCategoryDAO extends MariaDBDAO<Category> implements CategoryDAO {
+public final class MariaDBCategoryDAO extends MariaDBDAO implements CategoryDAO {
 
     public MariaDBCategoryDAO(Context context) {
         super(context);
@@ -32,8 +32,7 @@ public final class MariaDBCategoryDAO extends MariaDBDAO<Category> implements Ca
     }
 
     @Override
-    public Category update(@NonNull Category obj) {
-        return null;
+    public void update(@NonNull Category obj) {
     }
 
     @Override
