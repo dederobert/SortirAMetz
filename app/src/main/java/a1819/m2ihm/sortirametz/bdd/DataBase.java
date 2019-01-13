@@ -88,7 +88,7 @@ public class DataBase extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_CATEGORY_DESCRIPTION.getV1(), category.getDescription());
 
-        db.insert(TABLE_CATEGORIES, null, values);
+        category.setId(db.insert(TABLE_CATEGORIES, null, values));
     }
 
     /**

@@ -11,6 +11,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import java.util.Objects;
+
 public class SwipePlaceListener extends SwipeListener<Place> {
 
     public SwipePlaceListener(ListFragment listFragment, ListAdapter adapter) {
@@ -25,9 +27,10 @@ public class SwipePlaceListener extends SwipeListener<Place> {
     @Override
     protected void editItem(RecyclerView.ViewHolder viewHolder) {
         Place place = getAdapter().getElement(viewHolder.getAdapterPosition());
-        Intent intent = new Intent(this.getActivity().getActivity(), PlaceActivity.class);
-        intent.putExtra("placeId",place.getId());
-        this.getActivity().startActivityForResult(intent, PlaceActivity.REQUEST_EDIT);
+        Intent intent = new Intent(this.getFragment().getActivity(), PlaceActivity.class);
+        intent.putExtra("placeId",place.getId()).putExtra("position", viewHolder.getAdapterPosition());
+        Objects.requireNonNull(this.getFragment().getActivity())
+                .startActivityForResult(intent, PlaceActivity.REQUEST_EDIT);
     }
 
     @Override
@@ -41,8 +44,8 @@ public class SwipePlaceListener extends SwipeListener<Place> {
 
         //Display a snack bar with undo button
         Snackbar snackbar = Snackbar.
-                make(getActivity().mainLayout,
-                        name + " " + getActivity().getResources().getString(R.string.element_removed),
+                make(getFragment().mainLayout,
+                        name + " " + getFragment().getResources().getString(R.string.element_removed),
                         Snackbar.LENGTH_LONG);
         snackbar.setAction(R.string.undo, new View.OnClickListener() {
 

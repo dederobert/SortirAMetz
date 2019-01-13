@@ -1,6 +1,6 @@
 package a1819.m2ihm.sortirametz.listeners;
 
-import a1819.m2ihm.sortirametz.adapter.PlaceListHolder;
+import a1819.m2ihm.sortirametz.adapter.SwipeableListHolder;
 import android.graphics.Canvas;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -23,32 +23,32 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-        if (viewHolder instanceof PlaceListHolder) {
-            final View foregroundView =  ((PlaceListHolder)viewHolder).viewForeground;
+        if (viewHolder instanceof SwipeableListHolder ) {
+            final View foregroundView =  ((SwipeableListHolder)viewHolder).viewForeground;
             getDefaultUIUtil().onSelected(foregroundView);
         }
     }
 
     @Override
     public void onChildDrawOver(@NonNull Canvas c, @NonNull RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (viewHolder instanceof PlaceListHolder) {
-            final View foregroundView = ((PlaceListHolder) viewHolder).viewForeground;
+        if (viewHolder instanceof SwipeableListHolder) {
+            final View foregroundView = ((SwipeableListHolder) viewHolder).viewForeground;
             getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
         }
     }
 
     @Override
     public void clearView(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        if (viewHolder instanceof PlaceListHolder) {
-            final View foregroundView = ((PlaceListHolder) viewHolder).viewForeground;
+        if (viewHolder instanceof SwipeableListHolder) {
+            final View foregroundView = ((SwipeableListHolder) viewHolder).viewForeground;
             getDefaultUIUtil().clearView(foregroundView);
         }
     }
 
     @Override
     public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        if (viewHolder instanceof PlaceListHolder) {
-            final View foregroundView = ((PlaceListHolder) viewHolder).viewForeground;
+        if (viewHolder instanceof SwipeableListHolder) {
+            final View foregroundView = ((SwipeableListHolder) viewHolder).viewForeground;
             getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY, actionState, isCurrentlyActive);
         }
     }
@@ -58,6 +58,14 @@ public class ItemTouchHelperCallback extends ItemTouchHelper.SimpleCallback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         //Call onSwiped from SwipeListener interface
         listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+    }
+
+    public RecyclerItemTouchHelperListener getListener() {
+        return listener;
+    }
+
+    public void setListener(RecyclerItemTouchHelperListener listener) {
+        this.listener = listener;
     }
 
     /**

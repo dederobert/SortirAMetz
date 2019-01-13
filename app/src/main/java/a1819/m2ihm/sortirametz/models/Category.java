@@ -1,11 +1,11 @@
 package a1819.m2ihm.sortirametz.models;
 
 public class Category implements Recyclerable {
-    private int id;
+    private long id;
     private String description;
     private boolean mockCategory;
 
-    public Category(int id, String description, boolean mockCategory) {
+    public Category(long id, String description, boolean mockCategory) {
         this.id = id;
         this.description = description;
         this.mockCategory = mockCategory;
@@ -21,11 +21,11 @@ public class Category implements Recyclerable {
         this(0, description, mockCategory);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

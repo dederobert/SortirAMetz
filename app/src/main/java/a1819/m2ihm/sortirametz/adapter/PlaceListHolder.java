@@ -10,19 +10,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
-public class PlaceListHolder extends RecyclerView.ViewHolder{
+public class PlaceListHolder extends SwipeableListHolder{
 
     private ImageView placeIcon;
     private TextView placeNameView;
     private TextView placeAddressView;
-    public RelativeLayout viewForeground;
+
 
     PlaceListHolder(View itemView) {
         super(itemView);
         placeIcon = itemView.findViewById(R.id.placeIcon);
         placeNameView = itemView.findViewById(R.id.placeName);
         placeAddressView = itemView.findViewById(R.id.placeAddress);
-        viewForeground = itemView.findViewById(R.id.view_foreground);
     }
 
     void bind(Place place) {

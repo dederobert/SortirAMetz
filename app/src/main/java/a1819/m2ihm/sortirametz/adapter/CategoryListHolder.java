@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-public class CategoryListHolder extends RecyclerView.ViewHolder {
+public class CategoryListHolder extends SwipeableListHolder {
 
-    TextView txt_category_name;
+    private TextView txt_category_name;
 
     public CategoryListHolder(@NonNull View itemView) {
         super(itemView);

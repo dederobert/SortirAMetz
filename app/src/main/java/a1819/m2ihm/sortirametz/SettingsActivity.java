@@ -164,7 +164,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
-                //startActivity(new Intent(getActivity(), SettingsActivity.class));
+                //startActivity(new Intent(getFragment(), SettingsActivity.class));
                 //Return to previous activity when home option selected
                 getActivity().finish();
                 return true;

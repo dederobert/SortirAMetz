@@ -13,6 +13,7 @@ import a1819.m2ihm.sortirametz.listeners.RefreshPlaceListener;
 import a1819.m2ihm.sortirametz.listeners.swipe.SwipeCategoryListener;
 import a1819.m2ihm.sortirametz.listeners.swipe.SwipeListener;
 import a1819.m2ihm.sortirametz.listeners.swipe.SwipePlaceListener;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.*;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -39,6 +41,10 @@ public class ListFragment extends Fragment {
         PLACE,
         CATEGORY
     }
+
+    private SwipePlaceListener swipePlaceListener;
+    private SwipeCategoryListener swipeCategoryListener;
+    private ItemTouchHelperCallback callback;
 
     private PlaceDAO placeDAO;
     private CategoryDAO categoryDAO;
@@ -60,6 +66,7 @@ public class ListFragment extends Fragment {
         return view;
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -77,7 +84,9 @@ public class ListFragment extends Fragment {
         list.setItemAnimator(new DefaultItemAnimator());
         list.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
 
+        callback = new ItemTouchHelperCallback(null, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         updateAdapter();
+        new ItemTouchHelper(callback).attachToRecyclerView(list);
         addButton.setOnClickListener(new AddButtonListener(this));
     }
 
@@ -87,10 +96,20 @@ public class ListFragment extends Fragment {
         else
             adapter = new ListCategoryAdapter(this.getContext(), categoryDAO.findAll());
         list.setAdapter(adapter);
+        callback.setListener(getSwipeListener());
+    }
 
+    private SwipeListener getSwipeListener() {
         //Set the callback for swipe on left and right
-        SwipeListener swipeListener = displayMode.equals(DisplayMode.PLACE)?new SwipePlaceListener(this, adapter):new SwipeCategoryListener(this, adapter);
-        new ItemTouchHelper(new ItemTouchHelperCallback( swipeListener, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)).attachToRecyclerView(list);
+        if(displayMode.equals(DisplayMode.PLACE)){
+            if(swipePlaceListener == null)
+                swipePlaceListener =  new SwipePlaceListener(this, adapter);
+            return swipePlaceListener;
+        }else {
+            if (swipeCategoryListener == null)
+                swipeCategoryListener = new SwipeCategoryListener(this, adapter);
+            return swipeCategoryListener;
+        }
     }
 
     public ListAdapter getAdapter() {

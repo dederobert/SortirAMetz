@@ -15,9 +15,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class ListCategoryAdapter extends ListAdapter<Category> {
+
     public ListCategoryAdapter(Context context, List<Category> elements) {
         super(context, elements);
     }
+
 
     @NonNull
     @Override

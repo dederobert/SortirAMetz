@@ -71,6 +71,12 @@ public abstract class ListAdapter<T extends Recyclerable> extends RecyclerView.A
         notifyDataSetChanged();
     }
 
+    public void updateItem(T elements, int position) {
+        if (position == -1 || elements == null) return;
+        this.elements.set(position,elements);
+        notifyItemChanged(position);
+    }
+
     public void insertElement(T element) {
         elements.add(element);
         notifyItemInserted(elements.size()-1);

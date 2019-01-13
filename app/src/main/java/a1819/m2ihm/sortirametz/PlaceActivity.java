@@ -52,6 +52,7 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
     private boolean addMode;
     private Place place = null;
     private final int PLACE_PICKER_REQUEST = 1;
+    private int position;
 
     @OnClick(R.id.btn_save) void save() {
         place.setName(edt_name.getText().toString());
@@ -60,13 +61,12 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
         place.setDescription(edt_description.getText().toString());
         place.setIcon(edt_icon.getText().toString());
 
-        if (addMode) {
-            placeDAO.create(place);
-            getIntent().putExtra("placeId", place.getId());
-        } else
+        if (addMode)
+            place = placeDAO.create(place);
+        else
             placeDAO.update(place);
 
-        this.setResult(RESULT_OK);
+        this.setResult(RESULT_OK, new Intent().putExtra("placeId", place.getId()).putExtra("position", position));
         this.finish();
     }
 
@@ -84,6 +84,7 @@ public class PlaceActivity extends AppCompatActivity implements AdapterView.OnIt
         activity = this;
         long placeId = getIntent().getLongExtra("placeId", -1);
         this.addMode = (placeId==-1);
+        position = getIntent().getIntExtra("position", -1);
 
         AbstractDAOFactory factory = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ValueHelper.INSTANCE.getFactoryType()));
         placeDAO = factory.getPlaceDAO();

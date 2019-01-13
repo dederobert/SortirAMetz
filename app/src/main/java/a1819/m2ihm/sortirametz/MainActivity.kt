@@ -120,10 +120,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Log.d("[MainActivity]", "Adding a new category: " + category!!)
             }
         }
-        if (requestCode == PlaceActivity.REQUEST_EDIT ||
-                requestCode == CategoryActivity.REQUEST_EDIT ||
-                resultCode == RESULT_CANCELED)
-            listFragment.list.adapter!!.notifyDataSetChanged()
+        if (requestCode == PlaceActivity.REQUEST_EDIT)
+            listFragment.adapter.updateItem(placeDAO?.find(data!!.getLongExtra("placeId", -1)), data!!.getIntExtra("position", -1));
+        else if(requestCode == CategoryActivity.REQUEST_EDIT)
+            listFragment.adapter.updateItem(categoryDAO?.find(data!!.getLongExtra("categoryId", -1)), data!!.getIntExtra("position", -1));
+        else if (resultCode == RESULT_CANCELED) {
+            listFragment.list.adapter!!.notifyItemChanged(data!!.getIntExtra("position", -1));
+        }
     }
 
     private var isListNav: Boolean = false

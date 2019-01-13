@@ -6,9 +6,11 @@ import a1819.m2ihm.sortirametz.helpers.ValueHelper;
 import a1819.m2ihm.sortirametz.models.Category;
 import a1819.m2ihm.sortirametz.models.Place;
 import a1819.m2ihm.sortirametz.utils.UniqueId;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,16 +26,16 @@ public class CategoryActivity extends AppCompatActivity {
     private CategoryDAO categoryDAO;
 
     @BindView(R.id.edt_description) EditText edt_description;
+    private int position;
 
     @OnClick(R.id.btn_save) void save() {
         category.setDescription(edt_description.getText().toString());
-        if (addMode) {
-            categoryDAO.create(category);
-            getIntent().putExtra("categoryId", category.getId());
-        }else
+        if (addMode)
+            category = categoryDAO.create(category);
+        else
             categoryDAO.update(category);
 
-        this.setResult(RESULT_OK);
+        this.setResult(RESULT_OK, new Intent().putExtra("categoryId", category.getId()).putExtra("position", position));
         this.finish();
     }
 
@@ -48,8 +50,9 @@ public class CategoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_category);
         ButterKnife.bind(this);
 
-        long categoryId = getIntent().getLongExtra("categoryId", -1);
+        long categoryId = getIntent().getLongExtra("categoryId", -1L);
         this.addMode = (categoryId==-1);
+        position = getIntent().getIntExtra("position", -1);
 
         categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ValueHelper.INSTANCE.getFactoryType())).getCategoryDAO();
         if (!addMode)
