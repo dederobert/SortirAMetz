@@ -18,6 +18,9 @@ import butterknife.OnClick;
 
 import java.util.Objects;
 
+/**
+* Category activity
+*/
 public class CategoryActivity extends AppCompatActivity {
     public static final int REQUEST_ADD = UniqueId.INSTANCE.nextValue();
     public static final int REQUEST_EDIT = UniqueId.INSTANCE.nextValue();
