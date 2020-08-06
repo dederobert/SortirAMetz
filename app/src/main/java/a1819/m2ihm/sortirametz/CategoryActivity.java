@@ -15,59 +15,66 @@ import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
 import java.util.Objects;
 
 /**
-* Category activity
-*/
+ * Category activity
+ */
 public class CategoryActivity extends AppCompatActivity {
-    public static final int REQUEST_ADD = UniqueId.INSTANCE.nextValue();
-    public static final int REQUEST_EDIT = UniqueId.INSTANCE.nextValue();
-    private boolean addMode;
-    private Category category;
-    private CategoryDAO categoryDAO;
+  public static final int REQUEST_ADD = UniqueId.INSTANCE.nextValue();
+  public static final int REQUEST_EDIT = UniqueId.INSTANCE.nextValue();
+  private boolean addMode;
+  private Category category;
+  private CategoryDAO categoryDAO;
 
-    @BindView(R.id.edt_description) EditText edt_description;
-    private int position;
+  @BindView(R.id.edt_description) EditText edt_description;
+  private int position;
 
-    @OnClick(R.id.btn_save) void save() {
-        category.setDescription(edt_description.getText().toString());
-        if (addMode)
-            category = categoryDAO.create(category);
-        else
-            categoryDAO.update(category);
+  @OnClick(R.id.btn_save)
+  void save() {
+    category.setDescription(edt_description.getText().toString());
+    if (addMode)
+      category = categoryDAO.create(category);
+    else
+      categoryDAO.update(category);
 
-        this.setResult(RESULT_OK, new Intent().putExtra("categoryId", category.getId()).putExtra("position", position));
-        this.finish();
-    }
+    this.setResult(RESULT_OK, new Intent()
+                                  .putExtra("categoryId", category.getId())
+                                  .putExtra("position", position));
+    this.finish();
+  }
 
-    @OnClick(R.id.btn_cancel) void cancel() {
-        setResult(RESULT_CANCELED);
-        finish();
-    }
+  @OnClick(R.id.btn_cancel)
+  void cancel() {
+    setResult(RESULT_CANCELED);
+    finish();
+  }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_category);
-        ButterKnife.bind(this);
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_category);
+    ButterKnife.bind(this);
 
-        long categoryId = getIntent().getLongExtra("categoryId", -1L);
-        this.addMode = (categoryId==-1);
-        position = getIntent().getIntExtra("position", -1);
+    long categoryId = getIntent().getLongExtra("categoryId", -1L);
+    this.addMode = (categoryId == -1);
+    position = getIntent().getIntExtra("position", -1);
 
-        categoryDAO = Objects.requireNonNull(AbstractDAOFactory.getFactory(this, ValueHelper.INSTANCE.getFactoryType())).getCategoryDAO();
-        if (!addMode)
-            category = categoryDAO.find(categoryId);
-        else
-            category = new Category();
+    categoryDAO = Objects
+                      .requireNonNull(AbstractDAOFactory.getFactory(
+                          this, ValueHelper.INSTANCE.getFactoryType()))
+                      .getCategoryDAO();
+    if (!addMode)
+      category = categoryDAO.find(categoryId);
+    else
+      category = new Category();
 
-        String title = addMode ?getResources().getString(R.string.add_title)
-                :(getResources().getString(R.string.edit_title) + " "+category.getDescription());
-        setTitle(title);
+    String title = addMode ? getResources().getString(R.string.add_title)
+                           : (getResources().getString(R.string.edit_title) +
+                              " " + category.getDescription());
+    setTitle(title);
 
-        if (!addMode)
-            edt_description.setText(category.getDescription());
-    }
+    if (!addMode)
+      edt_description.setText(category.getDescription());
+  }
 }
